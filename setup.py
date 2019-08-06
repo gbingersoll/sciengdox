@@ -23,10 +23,12 @@ setup(name='sciengdox',
           'panflute'
       ],
       extras_require={
-          'tests': ['pytest', 'pyyaml', 'pep8']
+          'tests': ['pytest', 'pyyaml', 'pep8'],
+          'examples': ['scipy', 'matplotlib']
       },
       entry_points={
-          'console_scripts': ['funniest-joke=sciengdox.filter:main']
+          'console_scripts': [
+              'pandoc-pythonexec=sciengdox.pandoc_pythonexec.filter:main']
       },
       include_package_data=True,
       zip_safe=False)

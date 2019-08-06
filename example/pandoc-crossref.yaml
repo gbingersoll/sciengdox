@@ -1,0 +1,3 @@
+figureTemplate: <span class='caption-label'>$$figureTitle$$ $$i$$$$titleDelim$$</span> $$t$$
+tableTemplate: <span class='caption-label'>$$tableTitle$$ $$i$$$$titleDelim$$</span> $$t$$
+listingTemplate: <span class='caption-label'>$$listingTitle$$ $$i$$$$titleDelim$$</span> $$t$$
