@@ -103,9 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# VS Code
-.vscode/
-
 # Pipenv (do not check in for library development)
 Pipfile
 Pipfile.lock
