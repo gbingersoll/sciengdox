@@ -31,8 +31,11 @@ class Greeter:
     def speak(__self__):
         print("Hello World")
 
-    def respond(__self__, name):
-        print(f"Hello {name}")
+    def respond(__self__, name, polite=False):
+        if polite:
+            print(f"Hello {name}.  How are you?")
+        else:
+            print(f"Hello {name}")
 
 greeter = Greeter()
 greeter.speak()
@@ -42,4 +45,21 @@ This next code block continues from the previous one, so variables stay defined.
 
 ```{.python .echo}
 greeter.respond("Joe")
+greeter.respond("Joe", polite=True)
 ```
+
+```{.python}
+my_value = 37
+```
+
+The block right above this one in the markdown is not printed, but it
+establishes the value `my_value`{.python}.  This defaults to printing as plain
+text to match the surrounding paragraph, but you can also keep a result
+formatted as monospace code by including `.asCode` in its classes like this:
+`2*my_value`{.python .asCode}.  You can also wrap the result in an equation like
+$3x=`3*my_value`{.python}$.  This works for equation blocks too as in
+@eq:equation-with-code-eval.
+
+$$
+y = -5x + 0.5 = `-5 * my_value + 0.5`{.python}
+$$ {#eq:equation-with-code-eval}

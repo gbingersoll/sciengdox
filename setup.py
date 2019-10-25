@@ -20,7 +20,8 @@ setup(name='sciengdox',
       packages=['sciengdox'],
       install_requires=[
           'markdown',
-          'panflute'
+          'panflute',
+          'pexpect'
       ],
       extras_require={
           'tests': ['pytest', 'pyyaml', 'pep8'],
