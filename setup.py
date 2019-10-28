@@ -24,7 +24,7 @@ setup(name='sciengdox',
           'pexpect'
       ],
       extras_require={
-          'tests': ['pytest', 'pyyaml', 'pep8'],
+          'tests': ['pytest', 'pyyaml', 'pycodestyle', 'mock', 'pytest_mock'],
           'examples': ['scipy', 'matplotlib']
       },
       entry_points={
