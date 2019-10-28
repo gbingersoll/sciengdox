@@ -2,6 +2,7 @@ import panflute
 from panflute import debug  # zzz
 import pexpect
 import re
+import urllib
 
 
 class PythonRunner(object):
@@ -63,6 +64,32 @@ def element_classes(elem):
     return elem.classes if hasattr(elem, 'classes') else []
 
 
+def find_inline_code(text):
+    m = re.search(r'`([^`]*?)`{([^}]*?)}', text)
+    if m is not None:
+        code = m[1]
+        classes = list(map(lambda c: c[1:] if c[0] == '.' else None,
+                           m[2].split(' ')))
+        classes = [c for c in classes if c]  # Remove None values
+        return (code, classes, m.span())
+
+    return None
+
+
+def replace_embedded_code_with_result(text, doc):
+    found = find_inline_code(text)
+    if found is not None:
+        code, classes, span = found
+        if 'python' in classes:
+            # Run the code
+            result = exec_inline_python(panflute.Str(code), doc).text
+
+            # Replace the result in the Math element
+            text = text[0:span[0]] + result + text[span[1]:]
+
+    return text
+
+
 def instantiate_python_runner(doc):
     # Instantiate runner if it does not exist
     try:
@@ -89,27 +116,29 @@ def exec_inline_python(elem, doc):
     return panflute.Str(elem.text)
 
 
-def exec_code_in_math(elem, doc):
-    m = re.search(r'`([^`]*?)`{([^}]*)}', elem.text)
-    if m is not None:
-        code = m[1]
-        classes = m[2]
-        if '.python' in classes:
-            # Run the code
-            result = exec_inline_python(panflute.Str(code), doc).text
+def exec_code_in_image(elem, doc):
+    # Remove escape characters from image url
+    url = urllib.parse.unquote(elem.url)
 
-            # Replace the result in the Math element
-            before = elem.text[0:m.span()[0]]
-            after = elem.text[m.span()[1]:]
-            elem.text = before + result + after
+    # Execute any embedded code replacing it with the output result
+    url = replace_embedded_code_with_result(url, doc)
 
+    # Remove any single quotes around executed output
+    url = re.sub(r'\'', '', url)
+
+    # Restore escaped nature of image url
+    elem.url = urllib.parse.quote(url)
     return None
 
 
 def exec_code_blocks(elem, doc):
     classes = element_classes(elem)
+    if type(elem) == panflute.Image:
+        return exec_code_in_image(elem, doc)
+
     if type(elem) == panflute.Math:
-        return exec_code_in_math(elem, doc)
+        elem.text = replace_embedded_code_with_result(elem.text, doc)
+        return None
 
     if 'python' in classes and 'noexec' not in classes:
         if type(elem) == panflute.CodeBlock:
