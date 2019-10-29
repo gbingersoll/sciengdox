@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(name='sciengdox',
       version='0.1',
@@ -17,7 +17,7 @@ setup(name='sciengdox',
       author='Greg Ingersoll',
       author_email='greg.ingersoll@convolutionresearch.com',
       license='MIT',
-      packages=['sciengdox', 'pysvglib'],
+      packages=find_packages(),
       install_requires=[
           'markdown',
           'panflute',
