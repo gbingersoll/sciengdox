@@ -1,0 +1,2 @@
+# Torque
+newton_meter = newton * meter = N·m = N_m

@@ -19,13 +19,15 @@ setup(name='sciengdox',
       license='MIT',
       packages=find_packages(),
       install_requires=[
-          'markdown',
+          'numpy',
           'panflute',
-          'pexpect'
+          'pexpect',
+          'pint',
+          'scipy'
       ],
       extras_require={
           'tests': ['pytest', 'pyyaml', 'pycodestyle', 'mock', 'pytest_mock'],
-          'examples': ['scipy', 'matplotlib']
+          'examples': ['matplotlib']
       },
       entry_points={
           'console_scripts': [
