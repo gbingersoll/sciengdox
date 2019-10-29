@@ -4,6 +4,7 @@ from pytest_mock import mocker
 import os
 
 from sciengdox.figures import svg_figure
+from svg import RootSvg
 
 
 class FakeFig():
@@ -159,3 +160,13 @@ def test_svg_figure_returns_figure_url_with_blank_output_and_fig_dirs(mocker):
 
     url = svg_figure(fig, 'myfigure', output_dir="", figure_dir="")
     assert(url) == 'myfigure.svg'
+
+
+def test_svg_figure_saves_svg_diagram_to_correct_location(mocker):
+    setup_mocks(mocker, True)
+    fig = RootSvg((0, 1, 2, 3))
+    fig.write = mocker.stub()
+
+    url = svg_figure(fig, 'mysvgdiagram', figure_dir="figs", output_dir="outs")
+    fig.write.assert_called_once_with('outs/figs/mysvgdiagram.svg')
+    assert(url) == 'figs/mysvgdiagram.svg'

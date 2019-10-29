@@ -1,4 +1,5 @@
 import os
+from svg import RootSvg
 
 
 def svg_figure(fig,
@@ -15,7 +16,11 @@ def svg_figure(fig,
 
     filename = f'{basename}.svg'
     output_file = f'{output_dir}/{filename}' if output_dir != '' else filename
-    fig.savefig(output_file, format='svg')
+
+    if isinstance(fig, RootSvg):
+        fig.write(output_file)
+    else:
+        fig.savefig(output_file, format='svg')
 
     file_url = f'{figure_dir}/{filename}' if figure_dir != '' else filename
     return file_url
