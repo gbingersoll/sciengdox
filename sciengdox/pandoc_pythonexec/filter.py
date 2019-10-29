@@ -57,7 +57,8 @@ class PythonRunner(object):
 
 
 def prepare(doc):
-    pass
+    doc.elements_to_replace = []
+    doc.replacement_elements = []
 
 
 def element_classes(elem):
@@ -131,6 +132,31 @@ def exec_code_in_image(elem, doc):
     return None
 
 
+def replace_element(doc, old_elem, new_elem):
+    if isinstance(old_elem, panflute.Inline):
+        if isinstance(new_elem, panflute.Inline):
+            return new_elem
+        elif isinstance(new_elem, panflute.Block):
+            # new_elem is block.  Need to replace parent.
+            doc.elements_to_replace.append(old_elem.parent)
+            doc.replacement_elements.append(new_elem)
+    elif isinstance(old_elem, panflute.Block):
+        if isinstance(new_elem, panflute.Block):
+            return new_elem
+        if isinstance(new_elem, panflute.Inline):
+            # new_elem is inline.  Wrap in paragraph.
+            return panflute.Para(new_elem)
+    return None
+
+
+def handle_postponed_replacements(elem, doc):
+    try:
+        idx = doc.elements_to_replace.index(elem)
+        return doc.replacement_elements[idx]
+    except ValueError:
+        return None
+
+
 def exec_code_blocks(elem, doc):
     classes = element_classes(elem)
     if type(elem) == panflute.Image:
@@ -144,7 +170,11 @@ def exec_code_blocks(elem, doc):
         if type(elem) == panflute.CodeBlock:
             return exec_python_block(elem, doc)
         elif type(elem) == panflute.Code:
-            return exec_inline_python(elem, doc)
+            result = exec_inline_python(elem, doc)
+            if 'markdown' in classes:
+                new_element = panflute.convert_text(elem.text)[0]
+                return replace_element(doc, elem, new_element)
+            return result
 
 
 def finalize(doc):
@@ -155,10 +185,11 @@ def finalize(doc):
 
 
 def main(doc=None):
-    return panflute.run_filter(exec_code_blocks,
-                               prepare=prepare,
-                               finalize=finalize,
-                               doc=doc)
+    return panflute.run_filters([exec_code_blocks,
+                                 handle_postponed_replacements],
+                                prepare=prepare,
+                                finalize=finalize,
+                                doc=doc)
 
 
 if __name__ == "__main__":

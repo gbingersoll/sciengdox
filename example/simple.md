@@ -88,3 +88,39 @@ crv, = ax.plot(t, f)
 Later, we can reference these figures. For instance, @fig:sines is an
 interesting picture.  @Fig:sines can also be referenced at the beginning of a
 sentence with a different format.
+
+
+# Tables
+
+To build tables like @tbl:basic_table, any of the various normal markdown
+syntaxes can be used.  The table can also include values taken from executed
+code. @Tbl:basic_table has one of these in the lower right corner.
+
+```{.python}
+cell_value = 37
+```
+
+  Right     Left     Center     Default
+-------     ------ ----------   --------------------
+     12     12        12            12
+    123     123       123          123
+      1     1          1        `cell_value`{.python}
+
+Table: Demonstration of simple table syntax. {#tbl:basic_table}
+
+In addition there are helper functions in the Python library for building tables
+from ordinary lists of items.  This is demonstrated in @tbl:computed_table.
+Including the `.python` class makes the `print` statement executable and
+captures the output which is Markdown.  Including the `.markdown` class then
+tells the Pandoc filter to convert the Markdown into document elements on the
+fly rather than including the result verbatim.
+
+```{.python}
+from sciengdox.tables import Table
+tbl = Table([['abc def', 'bcd', 'xyz'],
+                ['egg', 'dog walker', 'guppy'],
+                ['bird', 'octopus', 'cat food']],
+            max_widths=[4, None, 4])
+```
+
+`print(tbl.markdown('my caption', 'tbl:label', 'crl'))`{.python .markdown}

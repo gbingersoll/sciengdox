@@ -1,1 +1,2 @@
-from .figures import *
+from . import figures
+from . import tables
