@@ -17,7 +17,7 @@ setup(name='sciengdox',
       author='Greg Ingersoll',
       author_email='greg.ingersoll@convolutionresearch.com',
       license='MIT',
-      packages=['sciengdox'],
+      packages=['sciengdox', 'pysvglib'],
       install_requires=[
           'markdown',
           'panflute',
