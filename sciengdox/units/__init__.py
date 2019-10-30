@@ -25,3 +25,13 @@ pint.formatting._FORMATS['M'] = {
 }
 pint.formatting._KNOWN_TYPES = \
     frozenset(list(pint.formatting._FORMATS.keys()) + ['~'])
+
+
+# concise function for printing quantities (i.e. numbers with units) with
+# formatting for the units
+def pq(q, precision=3, scientific=False):
+    if scientific:
+        num_type = 'g'
+    else:
+        num_type = 'f'
+    print("{:0.{}{}~M}".format(q, precision, num_type))

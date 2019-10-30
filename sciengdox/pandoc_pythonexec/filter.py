@@ -166,15 +166,23 @@ def exec_code_blocks(elem, doc):
         elem.text = replace_embedded_code_with_result(elem.text, doc)
         return None
 
-    if 'python' in classes and 'noexec' not in classes:
-        if type(elem) == panflute.CodeBlock:
-            return exec_python_block(elem, doc)
-        elif type(elem) == panflute.Code:
-            result = exec_inline_python(elem, doc)
-            if 'markdown' in classes:
-                new_element = panflute.convert_text(elem.text)[0]
-                return replace_element(doc, elem, new_element)
-            return result
+    if 'noexec' not in classes:
+        if (type(elem) == panflute.Code and
+                re.match(r'^pq\(.*\)$', elem.text)):
+            # Handle special case of printing a quantity if all that
+            # is in the code block is `pq(value)`
+            exec_inline_python(elem, doc)
+            new_element = panflute.convert_text(elem.text)[0]
+            return panflute.Span(*new_element.content)
+        if 'python' in classes:
+            if type(elem) == panflute.CodeBlock:
+                return exec_python_block(elem, doc)
+            elif type(elem) == panflute.Code:
+                result = exec_inline_python(elem, doc)
+                if 'md' in classes:
+                    new_element = panflute.convert_text(elem.text)[0]
+                    return replace_element(doc, elem, new_element)
+                return result
 
 
 def finalize(doc):

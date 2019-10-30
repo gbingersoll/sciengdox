@@ -111,9 +111,9 @@ Table: Demonstration of simple table syntax. {#tbl:basic_table}
 In addition there are helper functions in the Python library for building tables
 from ordinary lists of items.  This is demonstrated in @tbl:computed_table.
 Including the `.python` class makes the `print` statement executable and
-captures the output which is Markdown.  Including the `.markdown` class then
-tells the Pandoc filter to convert the Markdown into document elements on the
-fly rather than including the result verbatim.
+captures the output which is Markdown.  Including the `.md` (markdown) class
+then tells the Pandoc filter to convert the Markdown into document elements on
+the fly rather than including the result verbatim.
 
 ```{.python}
 from sciengdox.tables import Table
@@ -123,4 +123,23 @@ tbl = Table([['abc def', 'bcd', 'xyz'],
             max_widths=[4, None, 4])
 ```
 
-`print(tbl.markdown('my caption', 'tbl:label', 'crl'))`{.python .markdown}
+`print(tbl.markdown('my caption', 'tbl:computed_table', 'crl'))`{.python .md}
+
+
+## Units
+
+Units math is baked in through the inclusion of Pint.  This allows you to do
+things like this:
+
+```{.python .echo}
+from sciengdox.units import Q_, ureg, pq
+import sciengdox.constants as constants
+
+mass = 10.0 * ureg('kg')
+acceleration = constants.g
+force = mass * acceleration
+print(force.to('N'))
+```
+
+You can also print neat quantities (i.e. values with units) inline using the
+`pq()`{.noexec} macro like this force value: `pq(force)`.
