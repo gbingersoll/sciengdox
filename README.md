@@ -41,23 +41,67 @@ $ pipenv install -e .[tests]
 $ pipenv shell
 ```
 
-
-# Example
+# Use and Example
 
 An example Pandoc markdown file can be found in `example`.  To process this
 file, you need to have [`pandoc`](https://pandoc.org/) installed and in your
 path.  You also need to install the Pandoc filters
 [pandoc-crossref](https://github.com/lierdakil/pandoc-crossref) and
-[pandoc-citeproc](https://github.com/jgm/pandoc-citeproc).
+[pandoc-citeproc](https://github.com/jgm/pandoc-citeproc) which provide nice
+cross-referencing and reference/bibliography handling.
 
-The example also requires some python scientific modules.  Install these in your
-virtual environment by running:
+## Installation
+
+When working with macOS or Linux or
+[Linux on Windows via WSL](https://gist.github.com/gbingersoll/9e18afb9f4c3acd8674f5595c7e010f5)
+`pandoc` and the filters can be installed via [Homebrew](https://brew.sh/).  (On
+Linux/WSL, install [linuxbrew](https://docs.brew.sh/Homebrew-on-Linux).)  Then
+simply run:
+
+```shell
+$ brew install pandoc
+$ brew install pandoc-crossref
+$ brew install pandoc-citeproc
+```
+
+Then, of course, you need to install this filter and some other helpers for the
+example.  The example helpers can be installed into your Python virtual
+environment by running:
 
 ```shell
 $ pipenv install -e .[examples]
 ```
 
-Then compile the example HTML file by running:
+### Fonts
+
+The example templates rely on having a few fonts installed.
+The fonts to get are the Google
+[Source Sans Pro](https://fonts.google.com/specimen/Source+Sans+Pro),
+[Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro), and
+[Source Serif Pro](https://fonts.google.com/specimen/Source+Serif+Pro) families.
+
+On macOS, these can simply be downloaded and installed as you would any other
+font.  On Linux via WSL, you can install these normally on the Windows side and
+then synchronize the Windows font folder to the Linux side.  To do this, edit
+(using `sudo`) `/etc/fonts/local.conf` and add:
+
+```xml
+<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+<fontconfig>
+    <dir>/mnt/c/Windows/Fonts</dir>
+</fontconfig>
+```
+
+Then update the font cache on the Linux side:
+
+```shell
+$ sudo fc-cache -fv
+```
+
+## Building the Example
+
+Once everything is setup, compile the example HTML file by running:
 
 ```shell
 $ cd example
@@ -67,3 +111,79 @@ $ ./build.sh
 Open `example/output/example.html` in your browser or use e.g. the [Live
 Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
 plugin for VS Code.
+
+## Auto Regen
+
+To autoregenerate the document (e.g. the HTML version, the output of which is
+watched by the [Live
+Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+), you can use [Watchman](https://facebook.github.io/watchman/).
+
+To create a trigger on a particular directory (`doc/` in this example) with a `notebook.md` file (change
+this to suit your purposes), copy the following into a temporary `trigger.json`
+file:
+
+```json
+[
+    "trigger",
+    "doc/",
+    {
+        "name": "build_html",
+        "expression": [
+            "anyof",
+            [
+                "match",
+                "notebook.md",
+                "wholename"
+            ]
+        ],
+        "command": [
+            "pipenv",
+            "run",
+            "../bin/compile_doc.py"  zzz update command to build example
+        ]
+    }
+]
+```
+
+Then from your project root directory run:
+
+```shell
+watchman -j < trigger.json
+rm trigger.json
+```
+
+It is also recommended that you add a `.watchmanconfig` file to the watched
+directory (e.g. `doc/`; also add `.watchmanconfig` to your `.gitignore`) with
+the following contents:
+
+```json
+{
+  "settle": 3000
+}
+```
+
+The settle parameter is in milliseconds.
+
+To turn off watchman:
+
+```shell
+watchman shutdown-server
+```
+
+To turn it back on:
+
+```shell
+cd <project-root>
+watchman watch doc/
+```
+
+To watch the Watchman:
+
+```shell
+tail -f /usr/local/var/run/watchman/<username>-state/log
+```
+
+(Note that on Windows/WSL, to get `tail` to work the way you expect, you need to
+add `---disable-inotify` to the command; and yes, that's three `-` for some
+reason.)
