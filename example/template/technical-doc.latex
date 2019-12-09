@@ -1,0 +1,542 @@
+%!TEX TS-program = xelatex
+
+% Options for this document (set in markdown metadata)
+% papersize: letter (default) or a4
+%
+
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{svgnames*,table}{xcolor}
+\documentclass[$if(fontsize)$$fontsize$,$else$11pt,$endif$$if(lang)$$babel-lang$,$endif$$for(classoption)$$classoption$$sep$,$endfor$,tablecaptionabove]{scrartcl}
+
+% Basic packages
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amssymb,amsmath}
+\usepackage{csquotes}
+\usepackage{ifthen}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fancyvrb}
+\usepackage{hyperref}
+\usepackage{pbox}
+
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+% Use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[$for(microtypeoptions)$$microtypeoptions$$sep$,$endfor$]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+
+$if(graphics)$
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+$endif$
+
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+
+%
+% Variables for title and author
+%
+\usepackage{titling}
+
+\title{$if(title)$$title$$else$Define title in markdown metadata$endif$}
+
+$if(thanks)$
+\thanks{$thanks$}
+$endif$
+
+$if(subtitle)$
+\providecommand{\subtitle}[1]{}
+\subtitle{$subtitle$}
+$endif$
+
+$if(author)$
+\author{$for(author)$$author$$sep$ \and $endfor$}
+$endif$
+
+$if(institute)$
+\providecommand{\institute}[1]{}
+\institute{$for(institute)$$institute$$sep$ \and $endfor$}
+$endif$
+
+\date{$date$}
+
+
+%
+% Fonts
+%
+\usepackage{fontspec}
+\usepackage{realscripts}
+\setmainfont[SizeFeatures={Size=10.04}]{Arial}
+\setsansfont[SizeFeatures={Size=10.04}]{Arial}
+\setmonofont[SizeFeatures={Size=9.036}]{Source Code Pro Light}
+
+\usepackage[Dingbats]{ucharclasses}
+\newfontfamily{\symbolfont}{Source Serif Pro}
+\setTransitionsForSymbols{\symbolfont}{}
+
+
+%
+% Colors
+%
+\usepackage[]{xcolor}
+% \usepackage{xespotcolor}
+% \NewSpotColorSpace{PANTONE}
+% \AddSpotColor     {PANTONE}  {MediumBlue}      {PANTONE\SpotSpace 641\SpotSpace C} {1.00 0.53 0.21 0.04}
+% \SetPageColorSpace{PANTONE}
+\definecolor{MediumBlue}   {cmyk} {1.00, 0.53, 0.21, 0.04}
+\definecolor{DarkBlue}     {cmyk} {1.00, 0.86, 0.15, 0.03}
+\definecolor{Teal}         {cmyk} {1.00, 0.32, 0.42, 0.07}
+\definecolor{CoolGray}     {cmyk} {0.61, 0.53, 0.48, 0.19}
+\definecolor{LightGray}    {cmyk} {0.00, 0.00, 0.00, 0.33}
+\definecolor{Purple}       {cmyk} {0.82, 0.78, 0.00, 0.00}
+\definecolor{Brick}        {cmyk} {0.00, 0.99, 0.91, 0.33}
+
+
+%
+% Set up page size and margins
+%
+\usepackage{geometry}
+\ifthenelse{\equal{$if(papersize)$$papersize$$else$letter$endif$}{a4}}{
+  \geometry{a4paper,margin=2.5cm}
+}{
+  \geometry{letterpaper,margin=1in,bmargin=2in}
+}
+\geometry{portrait,centering,includefoot}
+
+
+%
+% Paragraph indentation and spacing
+%
+$if(indent)$
+$else$
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.0\baselineskip plus 2pt minus 1pt}
+$endif$
+
+
+%
+% Line spacing
+%
+\usepackage{setspace}
+\setstretch{$if(linestretch)$$linestretch$$else$0.885$endif$}
+
+
+%
+% Header and footer
+%
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{calc}
+\pagestyle{fancy}
+
+\colorlet{header-color}{CoolGray}
+\colorlet{footer-color}{LightGray}
+\fancyhf{}  % clear header and footer fields
+
+\setlength\headheight{1.25in}
+\fancyhead[L]{{\includegraphics[height=0.75in]{logo.pdf} \\ {\color{header-color}\fontsize{14pt}{24pt}\sffamily\bfseries $title$}}}
+\fancyhead[C]{{\parbox[t][.75in][t]{2.5in}{\vspace{5pt}\centering{\color{header-color}\fontsize{16pt}{16pt}\sffamily\bfseries SCIENGDOX \\* DOCUMENT}} \\}}
+\fancyhead[R]{{\parbox[t][.75in][t]{1.25in}{\vspace{5pt}{\color{header-color}\fontsize{14pt}{14pt}\sffamily\bfseries $docnumber$\\*REV $docversion$}} \\}}
+\fancyfoot[L]{{\color{footer-color}\sffamily\tiny {Example Organization, Inc.}}}
+\fancyfoot[C]{{\color{footer-color}\sffamily\small Compiled from\\*$gitrepo$$if(githash)$~($githash$)$endif$}}
+\fancyfoot[R]{{\color{footer-color}Page \thepage~of~\pageref*{LastPage}}}
+
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0.5pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{header-color}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{footer-color}\leaders\hrule height \footrulewidth\hfill}}
+
+
+%
+% H1 heading (Section)
+%
+\usepackage{titlesec}
+\titleformat{\section}[hang]
+{\color{MediumBlue}\fontsize{20.08pt}{24.096pt}\sffamily\bfseries}
+{\thesection}{0.5em}{}[]
+\titlespacing{\section}{0pt}{24.096pt plus 2pt minus 1pt}{16.064pt plus 2pt minus 1pt}
+\newcommand{\sectionbreak}{\clearpage}  % start sections on new page
+
+
+%
+% H2 heading (Subsection)
+%
+\titleformat{\subsection}[hang]
+{\color{MediumBlue}\fontsize{16.064pt}{19.2768pt}\sffamily}
+{\thesubsection}{0.5em}{}[]
+\titlespacing{\subsection}{0pt}{24.096pt plus 2pt minus 1pt}{10.04pt plus 2pt minus 1pt}
+
+
+%
+% H3 heading (Sub-subsection)
+%
+\titleformat{\subsubsection}[hang]
+{\color{MediumBlue}\fontsize{14.056pt}{16.8672pt}\sffamily}
+{\thesubsubsection}{0.5em}{}[]
+\titlespacing{\subsubsection}{0pt}{12.048pt plus 2pt minus 1pt}{6.024pt plus 2pt minus 1pt}
+
+
+%
+% H4 heading (Paragraph)
+%
+\titleformat{\paragraph}[hang]
+{\color{MediumBlue}\fontsize{12.048pt}{14.4576pt}\sffamily\bfseries}
+{}{0.5em}{}[]
+\titlespacing{\paragraph}{0pt}{18.072pt plus 2pt minus 1pt}{6.024pt plus 2pt minus 1pt}
+
+
+%
+% H5 heading (Subparagraph)
+%
+\titleformat{\subparagraph}[hang]
+{\color{CoolGray}\fontsize{12.048pt}{12.048pt}\sffamily\bfseries}
+{}{0.5em}{}[]
+\titlespacing{\subparagraph}{0pt}{12.048pt plus 2pt minus 1pt}{3.012pt plus 2pt minus 1pt}
+
+
+%
+% Lists
+%
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\renewcommand{\descriptionlabel}[1]{\hspace{\labelsep}\color{CoolGray}\fontsize{12.048pt}{12.048pt}\sffamily\bfseries{#1}}
+
+
+%
+% Block Quotation
+%
+\usepackage{mdframed}
+\newmdenv[rightline=false,bottomline=false,topline=false,linewidth=3pt,linecolor=MediumBlue,skipabove=\parskip]{customblockquote}
+\renewenvironment{quote}{\begin{customblockquote}\list{}{\rightmargin=0em\leftmargin=0em}%
+    \item\relax\color{CoolGray}\ignorespaces}{\unskip\unskip\endlist\end{customblockquote}}
+
+
+%
+% Captions
+%
+\colorlet{caption-label-color}{MediumBlue}
+\colorlet{caption-text-color} {CoolGray}
+ \usepackage[font={stretch=1.2}, labelfont={color=caption-label-color,sf,bf},
+            textfont={color=caption-text-color,sf}, position=top, skip=4mm, singlelinecheck=true,
+            justification=$if(caption-justification)$$caption-justification$$else$centerlast$endif$]{caption}
+
+
+%
+% Tables
+%
+\usepackage{tabu,multirow}
+$if(tables)$
+\usepackage{longtable,booktabs}
+% Fix footnotes in tables (requires footnote package)
+\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{longtable}}{}
+
+\arrayrulecolor{CoolGray}        % color of \toprule, \midrule, \bottomrule
+\setlength\heavyrulewidth{2pt}        % thickness of \toprule, \bottomrule
+\renewcommand{\arraystretch}{1.3}     % spacing (padding)
+\colorlet{table-row-color}{LightGray!10}
+\rowcolors{3}{}{}                     % row color
+
+% Reset rownum counter so that each table
+% starts with the same row colors.
+% https://tex.stackexchange.com/questions/170637/restarting-rowcolors
+\let\oldlongtable\longtable
+\let\endoldlongtable\endlongtable
+\renewenvironment{longtable}{\color{CoolGray}\oldlongtable} {
+\endoldlongtable
+\global\rownum=0\relax}
+
+% Unfortunately the colored cells extend beyond the edge of the
+% table because pandoc uses @-expressions (@{}) like so:
+% \begin{longtable}[]{@{}ll@{}}
+% \end{longtable}
+% https://en.wikibooks.org/wiki/LaTeX/Tables#.40-expressions
+$endif$
+
+% Define new column types to allow aligned fixed-width columns within
+% tabular or longtable
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+
+%
+% Hyperlinks
+%
+$if(colorlinks)$
+\usepackage{xcolor}
+\colorlet{default-linkcolor}{MediumBlue}
+\colorlet{default-citecolor}{MediumBlue}
+\colorlet{default-urlcolor} {MediumBlue}
+$endif$
+\usepackage{hyperref}
+\hypersetup{
+$if(title-meta)$
+  pdftitle={$title-meta$},
+$endif$
+$if(author-meta)$
+  pdfauthor={$author-meta$},
+$endif$
+$if(subject)$
+  pdfsubject={$subject$},
+$endif$
+$if(keywords)$
+  pdfkeywords={$for(keywords)$$keywords$$sep$, $endfor$},
+$endif$
+$if(tags)$
+  pdfkeywords={$for(tags)$$tags$$sep$, $endfor$},
+$endif$
+$if(colorlinks)$
+  colorlinks=true,
+  linkcolor=$if(linkcolor)$$linkcolor$$else$default-linkcolor$endif$,
+  citecolor=$if(citecolor)$$citecolor$$else$default-citecolor$endif$,
+  urlcolor=$if(urlcolor)$$urlcolor$$else$default-urlcolor$endif$,
+$else$
+  pdfborder={0 0 0},
+$endif$
+  linktoc=all,
+  breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+
+
+%
+% Listings
+%
+\colorlet{listing-background}{white}
+\colorlet{listing-numbers}{LightGray}
+\colorlet{listing-text-color}{black}
+\colorlet{listing-keyword}{Brick}
+\colorlet{listing-identifier}{MediumBlue}
+\colorlet{listing-string}{DarkBlue}
+\colorlet{listing-comment}{Purple}
+
+\usepackage{listings}
+\lstdefinestyle{listing_style}{
+  aboveskip         = 1.0em,
+  backgroundcolor   = \color{listing-background},
+  basicstyle        = \color{listing-text-color}\fontsize{10.04pt}{12.048pt}\ttfamily\linespread{1.15},
+  belowcaptionskip  = 1.0em,
+  breakatwhitespace = false,
+  breaklines        = true,
+  captionpos        = t,
+  commentstyle      = \color{listing-comment},
+  escapeinside      = {/*@}{@*/},
+  identifierstyle   = \color{listing-identifier},
+  keepspaces        = true,
+  keywordstyle      = \color{listing-keyword}\bfseries,
+  numbers           = left,
+  numbersep         = 2em,
+  numberstyle       = \color{listing-numbers}\ttfamily,
+  showstringspaces  = false,
+  showtabs          = false,
+  stepnumber        = 1,
+  stringstyle       = \color{listing-string},
+  tabsize           = 2,
+  xleftmargin       = 2em,
+  classoffset       = 0,
+  sensitive         = true,
+  literate          =
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\'e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\EUR}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+  {…}{{\ldots}}1 {≥}{{>=}}1 {≤}{{<=}}1 {„}{{\glqq}}1 {“}{{\grqq}}1
+  {”}{{''}}1
+}
+\lstset{style=listing_style}
+
+\lstdefinelanguage{XML}{
+  morestring      = [b]",
+  moredelim       = [s][\bfseries\color{listing-keyword}]{<}{\ },
+  moredelim       = [s][\bfseries\color{listing-keyword}]{</}{>},
+  moredelim       = [l][\bfseries\color{listing-keyword}]{/>},
+  moredelim       = [l][\bfseries\color{listing-keyword}]{>},
+  morecomment     = [s]{<?}{?>},
+  morecomment     = [s]{<!--}{-->},
+  commentstyle    = \color{listing-comment},
+  stringstyle     = \color{listing-string},
+  identifierstyle = \color{listing-identifier}
+}
+
+\DeclareCaptionFormat{listingcaption}{#1#2#3\vspace{-8pt}\textcolor{CoolGray}{\rule{\dimexpr\textwidth}{1pt}}}
+\captionsetup[lstlisting]{format=listingcaption,skip=15pt,justification=raggedright,singlelinecheck=false}
+\BeforeBeginEnvironment{lstlisting}{%
+  \textcolor{CoolGray}{\rule{\dimexpr\textwidth}{2pt}}
+  \vspace{-1.8\parskip}
+}
+\AfterEndEnvironment{lstlisting}{%
+  \vspace{-1.5\parskip}
+  \textcolor{CoolGray}{\rule{\dimexpr\textwidth}{2pt}}
+}
+
+% number listings by section
+\usepackage{chngcntr}
+\AtBeginDocument{\counterwithin{lstlisting}{section}}
+
+% passthrough command for inlining code elements
+\newcommand{\passthrough}[1]{#1}
+
+
+%
+% Cross references
+%
+\usepackage{cleveref}
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+
+\crefformat{section}{#2section~#1#3}
+\Crefformat{section}{#2Section~#1#3}
+\crefformat{equation}{#2eq.~#1#3}
+\Crefformat{equation}{#2Equation~#1#3}
+\crefrangeformat{equation}{eqs.~#3#1#4 to~#5#2#6}
+\Crefrangeformat{equation}{Equations~#3#1#4 to~#5#2#6}
+\crefmultiformat{equation}{eqs.~#2#1#3}{ and~#2#1#3}{, #2#1#3}{, and~#2#1#3}
+\Crefmultiformat{equation}{Equations~#2#1#3}{ and~#2#1#3}{, #2#1#3}{, and~#2#1#3}
+\crefformat{figure}{#2fig.~#1#3}
+\Crefformat{figure}{#2Figure~#1#3}
+\crefrangeformat{figure}{figs.~#3#1#4 to~#5#2#6}
+\Crefrangeformat{figure}{Figures~#3#1#4 to~#5#2#6}
+\crefformat{lstlisting}{#2listing~#1#3}
+\Crefformat{lstlisting}{#2Listing~#1#3}
+\crefrangeformat{lstlisting}{listings~#3#1#4 to~#5#2#6}
+\Crefrangeformat{lstlisting}{Listings~#3#1#4 to~#5#2#6}
+\crefformat{table}{#2table~#1#3}
+\Crefformat{table}{#2Table~#1#3}
+\crefrangeformat{table}{tables~#3#1#4 to~#5#2#6}
+\Crefrangeformat{table}{Tables~#3#1#4 to~#5#2#6}
+
+
+%
+% TOC
+%
+\setcounter{tocdepth}{3}
+$if(numbersections)$
+\setcounter{secnumdepth}{3}
+$endif$
+
+\AtBeginDocument{%
+  \newcaptionname{english}\lstlistlistingname{List of Code Listings}%
+}
+
+\usepackage{tocstyle}
+\settocstylefeature{entryhook}{\color{black}\sffamily}
+\settocfeature[toc][1]{entryhook}{\color{black}\sffamily\bfseries}
+
+
+%
+% Bibliography
+%
+$if(natbib)$
+\usepackage[$natbiboptions$]{natbib}
+\bibliographystyle{$if(biblio-style)$$biblio-style$$else$plainnat$endif$}
+$endif$
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Document Start
+%
+\begin{document}
+
+%
+% Front matter
+%
+
+\begingroup
+\let\clearpage\relax
+
+$if(toc)$
+{
+$if(colorlinks)$
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+$endif$
+\setcounter{tocdepth}{$toc-depth$}
+\tableofcontents
+}
+$endif$
+
+$if(lot)$
+{
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+\listoftables
+}
+$endif$
+
+$if(lof)$
+{
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+\listoffigures
+}
+$endif$
+
+$if(lol)$
+{
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+\listoflistings
+}
+$endif$
+\endgroup
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Add a new page if any list was included
+$if(toc)$
+\newpage
+$else$
+$if(lof)$
+\newpage
+$else$
+$if(lot)$
+\newpage
+$else$
+$if(lol)$
+\newpage
+$else$
+$endif$
+$endif$
+$endif$
+$endif$
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%
+% Document Body
+%
+
+$if(dummy)$
+\Blinddocument
+\section{Gamma}
+\blindmathpaper
+$else$
+$body$
+$endif$
+
+%
+% Back matter
+%
+
+$for(include-after)$
+$include-after$
+$endfor$
+
+\end{document}
+

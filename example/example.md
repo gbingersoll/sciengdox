@@ -1,7 +1,7 @@
 ---
 title: Example Document
 author: [Author]
-date: 2019-08-06
+date: 2019-12-30
 subject: "Markdown"
 tags: [Markdown, Example]
 docnumber: XY-1234
@@ -12,14 +12,13 @@ compiledfrom: true
 gitrepo: my_git_repo
 
 titlepage: true
-toc: true
 lof: true
 lot: true
 lol: true
 
 autoSectionLabels: true
 
-natbib: true
+bibliography: example.bib
 csl: ieee.csl
 references:
 - type: article-journal
@@ -46,36 +45,26 @@ references:
   language: en-GB
 ...
 
+# Example Document
+
+This document demonstrates some available features for your writing.  Mostly it
+is everything in standard [Pandoc Markdown](https://pandoc.org/MANUAL.html#pandocs-markdown)
+with some additional conventions.
+
+Of particular interest, though, are executable code blocks discussed in
+@sec:code-execution.
+
 # Section Headings
 
-Hello, here is some text without a meaning. This text should show what a printed text will look
-like at this place. If you read this text, you will get no information. Really? Is there no information?
-Is there a difference between this text and some nonsense like “Huardest gefburn”? Kjift – not at all!
-A blind text like this gives you information about the selected font, how the letters are written and an
-impression of the look. This text should contain all letters of the alphabet and it should be written
-in of the original language. There is no need for special content, but the length of words should match
-the language.
-
-Another paragraph in the first section.  Let's finish with a footnote.[^1]
-
-On second thought, let's finish with a citation.  You should see Watson and Crick's article[@WatsonCrick1953].
-
-On third thought, let's add an external link to [Google](http://google.com "Google").
-
-On fourth thought, let's refer to another internal section like this: @Sec:minor-section.
-
-[^1]: I'm a footnote!
-
+This is a major section.
 
 ## A Subsection
 
-Hello, here is some text without a meaning. This text should show what a printed text will look
-like at this place. If you read this text, you will get no information. Really? Is there no information?
+This is a subsection.
 
 ### A Sub-subsection
 
-Hello, here is some text without a meaning. This text should show what a printed text will look
-like at this place. If you read this text, you will get no information. Really? Is there no information?
+This is a sub-subsection.
 
 #### Minor section
 
@@ -84,6 +73,39 @@ Un-numbered short sections can also have a heading.
 ##### Paragraph Heading
 
 Individual paragraphs can have headings too.
+
+# Links
+
+Links to internal sections are handled using the
+[`pandoc-crossref`](https://lierdakil.github.io/pandoc-crossref/) filter.  You
+can reference sections as in @sec:minor-section.  @Sec:a-subsection demonstrates a
+link starting a sentence.  Setting up styles (e.g. "sec." or "section") happens
+in the file `pandoc-crossref.yaml` in the template subdirectory.
+
+You can also generate external links with hover text like this:
+[Google](http://google.com "Google").
+
+# Citations
+
+Citations are handled using the
+[`pandoc-citeproc`](https://github.com/jgm/pandoc-citeproc/) filter.  Citation
+data is entered as metadata at the top of the markdown file, and you can
+reference an article in the text[@WatsonCrick1953].
+
+You can also put your references in a [BibTeX](http://www.bibtex.org/) file or
+any of the other file formats that `pandoc-citeproc` supports.  This citation
+comes from the `example.bib` file[@mrx05].  The bibliography file name can be
+provided in the metatdata at the top of the markdown file.
+
+Formatting of citations is handled via a `.csl` file.  The one for
+[IEEE style](https://ieee-dataport.org/sites/default/files/analysis/27/IEEE%20Citation%20Guidelines.pdf)
+is used in this example.
+
+# Footnotes
+
+This paragraph has a linked footnote[^1] that will appear in the document.
+
+[^1]: I'm a footnote!
 
 # Lists
 
@@ -126,23 +148,15 @@ Term 3
 Block quotes are useful for including relevant information directly in the
 document rather than only including a citation.
 
-> Hello, here is some text without a meaning. This text should show what a printed text will look
-> like at this place. If you read this text, you will get no information. Really? Is there no information?
-> Hello, here is some text without a meaning. This text should show what a printed text will look
-> like at this place. If you read this text, you will get no information. Really? Is there no information?
+> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+> incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+> nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+> Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+> fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+> culpa qui officia deserunt mollit anim id est laborum.
 >
 > 1. This is a list inside a block quote.
 > 2. Second item.
-
-# Figures
-
-We can use Markdown for figures with captions and so on.
-
-![Bender with Cigar](bender.png){#fig:bender width=50%}
-
-Later, we can reference these figures. For instance, @fig:bender is an
-interesting picture.  @Fig:bender can also be referenced at the beginning of a
-sentence with a different format.
 
 # Equations
 
@@ -154,20 +168,6 @@ $$ {#eq:simple-equation}
 
 @Eq:simple-equation is an interesting equation. We can, of course, link to
 @eq:simple-equation.  And we can also inline math:  $y = ax + b$.
-
-# Tables
-
-Here is some bland text that now becomes interesting because it references
-@tbl:my_table.  @Tbl:my_table is a capitalized link to the table.
-
-  Right     Left     Center     Default
--------     ------ ----------   -------
-     12     12        12            12
-    123     123       123          123
-      1     1          1             1
-
-Table: Demonstration of simple table syntax. {#tbl:my_table}
-
 
 # Code
 
@@ -216,8 +216,127 @@ class Greeter:
     def speak(__self__):
         print("Hello World")
 
+    def respond(__self__, name, polite=False):
+        if polite:
+            print(f"Hello {name}.  How are you?")
+        else:
+            print(f"Hello {name}")
+
 greeter = Greeter()
 greeter.speak()
 ```
+
+This next code block continues from the previous one, so variables stay defined.
+
+```{.python .echo}
+greeter.respond("Joe")
+greeter.respond("Joe", polite=True)
+```
+
+```{.python}
+my_value = 37
+```
+
+The block right above this one in the markdown is not printed, but it
+establishes the value `my_value`{.python}.  This defaults to printing as plain
+text to match the surrounding paragraph, but you can also keep a result
+formatted as monospace code by including `.asCode` in its classes like this:
+`2*my_value`{.python .asCode}.  You can also wrap the result in an equation like
+$3x=`3*my_value`{.python}$.  This works for equation blocks too as in
+@eq:equation-with-code-eval.
+
+$$
+y = -5x + 0.5 = `-5 * my_value + 0.5`{.python}
+$$ {#eq:equation-with-code-eval}
+
+# Figures
+
+We can use Markdown for figures with captions and so on.  Static images should
+be stored in a subfolder `images/`.  This folder gets copied to the specified
+output directory when the document is compiled.  (Subfolders within the that
+folder are, of course, allowed for organization.)
+
+![A Dog. (Photo by [Jamie Street](https://unsplash.com/@jamie452) on [Unsplash](https://unsplash.com))](images/jamie-street-UtrE5DcgEyg-unsplash.jpg){#fig:dog width=50%}
+
+Later, we can reference these figures. For instance, @fig:dog is an
+interesting picture.  @Fig:dog can also be referenced at the beginning of a
+sentence with a different format.
+
+We can also generate figures through code execution.
+
+```{.python .echo}
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+import sciengdox
+from sciengdox.figures import svg_figure
+
+t = np.linspace(0, 5, 300)
+num_sines = 2
+f = 3*np.sin(2 * np.pi * 2 * t) + 1.8*np.cos(2 * np.pi * 0.2 * t)
+fig, ax = plt.subplots(1, 1)
+crv, = ax.plot(t, f)
+```
+
+![Sum of `num_sines`{.python} sines](`svg_figure(fig, 'sines')`{.python}){#fig:sines width=50%}
+
+Later, we can reference these generated figures, too. For instance, @fig:sines
+is an interesting picture.  @Fig:sines can also be referenced at the beginning
+of a sentence with a different format.
+
+# Tables
+
+To build tables like @tbl:basic_table, any of the various normal markdown
+syntaxes can be used.  The table can also include values taken from executed
+code. @Tbl:basic_table has one of these in the lower right corner.
+
+```{.python}
+cell_value = 37
+```
+
+  Right     Left     Center     Default
+-------     ------ ----------   --------------------
+     12     12        12            12
+    123     123       123          123
+      1     1          1        `cell_value`{.python}
+
+Table: Demonstration of simple table syntax. {#tbl:basic_table}
+
+In addition there are helper functions in the Python library for building tables
+from ordinary lists of items.  This is demonstrated in @tbl:computed_table.
+Including the `.python` class makes the `print` statement executable and
+captures the output which is Markdown.  Including the `.md` (markdown) class
+then tells the Pandoc filter to convert the Markdown into document elements on
+the fly rather than including the result verbatim.
+
+```{.python}
+from sciengdox.tables import Table
+tbl = Table([['abc def', 'bcd', 'xyz'],
+                ['egg', 'dog walker', 'guppy'],
+                ['bird', 'octopus', 'cat food']],
+            max_widths=[4, None, 4])
+```
+
+`print(tbl.markdown('my caption', 'tbl:computed_table', 'crl'))`{.python .md}
+
+
+# Units
+
+Units math is baked in through the inclusion of
+[Pint](https://pint.readthedocs.io/en/0.9/).  This allows you to do things like
+this:
+
+```{.python .echo}
+from sciengdox.units import Q_, ureg, pq
+import sciengdox.constants as constants
+
+mass = 10.0 * ureg('kg')
+acceleration = constants.g
+force = mass * acceleration
+print(force.to('N'))
+```
+
+You can also print neat quantities (i.e. values with units) inline using the
+`pq()`{.noexec} macro like this force value: `pq(force)`.
 
 # References
