@@ -27,7 +27,7 @@ setup(name='sciengdox',
       ],
       extras_require={
           'tests': ['pytest', 'pyyaml', 'pycodestyle', 'mock', 'pytest_mock'],
-          'examples': ['matplotlib']
+          'examples': ['matplotlib', 'colorama']
       },
       entry_points={
           'console_scripts': [
