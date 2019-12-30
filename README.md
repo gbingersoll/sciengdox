@@ -99,13 +99,64 @@ Then update the font cache on the Linux side:
 $ sudo fc-cache -fv
 ```
 
+### Stylesheets
+
+The example file uses an HTML template that includes a CSS stylesheet that is
+generated from [SCSS](https://sass-lang.com/documentation/syntax).  To compile
+this automatically, you need to have
+[SASS installed](https://sass-lang.com/install).
+
+On macOS, this can be installed via Homebrew:
+
+```shell
+$ brew install sass/sass/sass
+```
+
+On macOS/Linux/WSL it can be installed as a Node.js package (assuming you
+already have [Node.js/npm](https://nodejs.org/) installed):
+
+```shell
+$ npm install -g sass
+```
+
+## Building
+
+This Python library provides a script, `compiledoc`, that will appear in your
+virtual environment's path once the library is installed.  In general, you
+provide an output directory and an input markdown file, and it will build an
+HTML output.
+
+```shell
+$ compiledoc -o output mydoc.md
+```
+
+To build a PDF:
+
+```shell
+$ compiledoc -o output --pdf mydoc.md
+```
+
+To build both HTML and PDF:
+
+```shell
+$ compiledoc -o output --all mydoc.md
+```
+
+To see all available command line options (for specifying templates, paths to
+required external executables, static files like images and bibliography files,
+etc.):
+
+```shell
+$ compiledoc --help
+```
+
 ## Building the Example
 
 Once everything is setup, compile the example HTML file by running:
 
 ```shell
 $ cd example
-$ ./build.sh
+$ compiledoc -o output example.md
 ```
 
 Open `example/output/example.html` in your browser or use e.g. the [Live
@@ -115,13 +166,13 @@ plugin for VS Code.
 ## Auto Regen
 
 To autoregenerate the document (e.g. the HTML version, the output of which is
-watched by the [Live
-Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
+watched by the
+[Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
 ), you can use [Watchman](https://facebook.github.io/watchman/).
 
-To create a trigger on a particular directory (`doc/` in this example) with a `notebook.md` file (change
-this to suit your purposes), copy the following into a temporary `trigger.json`
-file:
+To create a trigger on a particular directory (`doc/` in this example) with a
+`notebook.md` file (change this to suit your purposes), copy the following into
+a temporary `trigger.json` file:
 
 ```json
 [
@@ -140,7 +191,11 @@ file:
         "command": [
             "pipenv",
             "run",
-            "../bin/compile_doc.py"  zzz update command to build example
+            "compiledoc",
+            "-o",
+            "output",
+            "--no-pdf",
+            "notebook.md"
         ]
     }
 ]
