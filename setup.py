@@ -33,5 +33,8 @@ setup(name='sciengdox',
           'console_scripts': [
               'pandoc-pythonexec=sciengdox.pandoc_pythonexec.filter:main']
       },
+      scripts=[
+          'sciengdox/bin/compiledoc',
+      ],
       include_package_data=True,
       zip_safe=False)
