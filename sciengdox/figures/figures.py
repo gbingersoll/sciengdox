@@ -5,7 +5,7 @@ from svg import RootSvg
 def svg_figure(fig,
                basename,
                figure_dir='figures',
-               output_dir='output'):
+               output_dir=''):
     if output_dir == '':
         output_dir = figure_dir
     elif figure_dir != '':
