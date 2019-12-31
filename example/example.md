@@ -176,7 +176,7 @@ This is where things get really interesting.
 ## Code Listings
 
 Here is a simple code listing and a reference to it:  @lst:simple_listing.  @Lst:simple_listing is C++.
-@Lst:simple_listing2 is Ruby.  Finally, @lst:simple_listing3 is Python
+@Lst:simple_listing2 is Ruby.  Finally, @lst:simple_listing3 is Python.
 
 We can also put `code keywords` inline with regular text.
 
@@ -210,8 +210,9 @@ class Hello:
 
 Defining this code block will echo the code block itself to the document and
 also will execute it, printing the output to the document as well.
+@Lst:executed_python is executed python code.
 
-```{.python .echo}
+```{.python .echo #lst:executed_python caption="Executed Python code"}
 class Greeter:
     def speak(__self__):
         print("Hello World")
@@ -226,9 +227,13 @@ greeter = Greeter()
 greeter.speak()
 ```
 
+In general, a code block with the `.python` flag will be executed unless it also
+includes the `.noexec` flag.  If the `.echo` flag is included, the block and the
+results will be inclued in the document.
+
 This next code block continues from the previous one, so variables stay defined.
 
-```{.python .echo}
+```{.python .echo #lst:continued_python caption="Executed Python code continuing from the previous block"}
 greeter.respond("Joe")
 greeter.respond("Joe", polite=True)
 ```
@@ -237,11 +242,12 @@ greeter.respond("Joe", polite=True)
 my_value = 37
 ```
 
-The block right above this one in the markdown is not printed, but it
-establishes the value `my_value`{.python}.  This defaults to printing as plain
-text to match the surrounding paragraph, but you can also keep a result
-formatted as monospace code by including `.asCode` in its classes like this:
-`2*my_value`{.python .asCode}.  You can also wrap the result in an equation like
+The block right above this one in the markdown is not printed (because it does
+not included the `.echo` flag), but it establishes the value
+`my_value`{.python}.  This defaults to printing as plain text to match the
+surrounding paragraph, but you can also keep a result formatted as monospace
+code by including `.asCode` in its classes like this: `2*my_value`{.python
+.asCode}.  You can also wrap the result in an equation like
 $3x=`3*my_value`{.python}$.  This works for equation blocks too as in
 @eq:equation-with-code-eval.
 
@@ -264,7 +270,7 @@ sentence with a different format.
 
 We can also generate figures through code execution.
 
-```{.python .echo}
+```{.python .echo #lst:image_gen_python caption="Executed Python code generating an image"}
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
@@ -326,7 +332,7 @@ Units math is baked in through the inclusion of
 [Pint](https://pint.readthedocs.io/en/0.9/).  This allows you to do things like
 this:
 
-```{.python .echo}
+```{.python .echo #lst:units_python caption="Executed Python using units math"}
 from sciengdox.units import Q_, ureg, pq
 import sciengdox.constants as constants
 
