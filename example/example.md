@@ -231,9 +231,11 @@ In general, a code block with the `.python` flag will be executed unless it also
 includes the `.noexec` flag.  If the `.echo` flag is included, the block and the
 results will be inclued in the document.
 
-This next code block continues from the previous one, so variables stay defined.
+@Lst:continued_python continues from the previous one, so variables stay
+defined.  This code block also includes the `.repl` flag which simulates an
+interactive session by prefixing inputs with `>>>`.
 
-```{.python .echo #lst:continued_python caption="Executed Python code continuing from the previous block"}
+```{.python .echo .repl #lst:continued_python caption="Executed Python code continuing from the previous block and displayed like a REPL session"}
 greeter.respond("Joe")
 greeter.respond("Joe", polite=True)
 ```
@@ -332,7 +334,7 @@ Units math is baked in through the inclusion of
 [Pint](https://pint.readthedocs.io/en/0.9/).  This allows you to do things like
 this:
 
-```{.python .echo #lst:units_python caption="Executed Python using units math"}
+```{.python .echo .repl #lst:units_python caption="Executed Python using units math"}
 from sciengdox.units import Q_, ureg, pq
 import sciengdox.constants as constants
 

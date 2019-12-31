@@ -13,7 +13,7 @@ class PythonRunner(object):
         self.proc = pexpect.spawn('python')
         self.proc.expect(PythonRunner.prompt)
 
-    def run_lines(self, lines, echo_input=True):
+    def run_lines(self, lines, echo_input=True, repl_prefix=None):
         indent_level = 0
         output = ""
 
@@ -37,7 +37,9 @@ class PythonRunner(object):
             self.proc.sendline(line)
             self.proc.expect([PythonRunner.prompt, PythonRunner.continuation])
             result = self.proc.before.decode('utf-8')
-            if not echo_input:
+            if echo_input:
+                result = (repl_prefix or '') + result
+            else:
                 # Remove input line and any leading line break
                 result = re.sub(r'^\r?\n', '', result[len(line):])
             output += result
@@ -101,7 +103,9 @@ def instantiate_python_runner(doc):
 
 def exec_python_block(elem, doc):
     instantiate_python_runner(doc)
-    elem.text = doc.python_runner.run_lines(elem.text.splitlines())
+    repl_prefix = '>>> ' if 'repl' in element_classes(elem) else None
+    elem.text = doc.python_runner.run_lines(elem.text.splitlines(),
+                                            repl_prefix=repl_prefix)
     if 'echo' in element_classes(elem):
         return None
     return []
