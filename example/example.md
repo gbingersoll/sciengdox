@@ -68,11 +68,13 @@ This is a sub-subsection.
 
 #### Minor section
 
-Un-numbered short sections can also have a heading.
+Un-numbered short sections can also have a heading.  Note that in LaTeX terms,
+this is actually a "paragraph".
 
 ##### Paragraph Heading
 
-Individual paragraphs can have headings too.
+Individual paragraphs can have headings too.  In LaTeX terms, this is actually a
+sub-paragraph. These may not actually be terribly useful.
 
 # Links
 
@@ -292,6 +294,25 @@ Later, we can reference these generated figures, too. For instance, @fig:sines
 is an interesting picture.  @Fig:sines can also be referenced at the beginning
 of a sentence with a different format.
 
+# Units
+
+Units math is baked in through the inclusion of
+[Pint](https://pint.readthedocs.io/en/0.9/).  This allows you to do things like
+this:
+
+```{.python .echo .repl #lst:units_python caption="Executed Python using units math"}
+from sciengdox.units import Q_, ureg, pq
+import sciengdox.constants as constants
+
+mass = 10.0 * ureg('kg')
+acceleration = constants.g
+force = mass * acceleration
+print(force.to('N'))
+```
+
+You can also print neat quantities (i.e. values with units) inline using the
+`pq()`{.noexec} macro like this force value: `pq(force)`.
+
 # Tables
 
 To build tables like @tbl:basic_table, any of the various normal markdown
@@ -320,31 +341,11 @@ the fly rather than including the result verbatim.
 ```{.python}
 from sciengdox.tables import Table
 tbl = Table([['abc def', 'bcd', 'xyz'],
-                ['egg', 'dog walker', 'guppy'],
-                ['bird', 'octopus', 'cat food']],
+             ['egg', 'dog walker', 'guppy'],
+             ['bird', 'octopus', 'cat food']],
             max_widths=[4, None, 4])
 ```
 
-`print(tbl.markdown('my caption', 'tbl:computed_table', 'crl'))`{.python .md}
-
-
-# Units
-
-Units math is baked in through the inclusion of
-[Pint](https://pint.readthedocs.io/en/0.9/).  This allows you to do things like
-this:
-
-```{.python .echo .repl #lst:units_python caption="Executed Python using units math"}
-from sciengdox.units import Q_, ureg, pq
-import sciengdox.constants as constants
-
-mass = 10.0 * ureg('kg')
-acceleration = constants.g
-force = mass * acceleration
-print(force.to('N'))
-```
-
-You can also print neat quantities (i.e. values with units) inline using the
-`pq()`{.noexec} macro like this force value: `pq(force)`.
+`print(tbl.markdown('A Computed Table', 'tbl:computed_table', 'crl'))`{.python .md}
 
 # References

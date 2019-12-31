@@ -7,10 +7,9 @@
 \PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{svgnames*,table}{xcolor}
-\documentclass[$if(fontsize)$$fontsize$,$else$11pt,$endif$$if(lang)$$babel-lang$,$endif$$for(classoption)$$classoption$$sep$,$endfor$,tablecaptionabove]{scrartcl}
+\documentclass[$if(fontsize)$$fontsize$,$else$11pt,$endif$$if(lang)$$babel-lang$,$endif$$for(classoption)$$classoption$$sep$,$endfor$]{scrartcl}
 
 % Basic packages
-\usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amssymb,amsmath}
 \usepackage{csquotes}
@@ -77,16 +76,16 @@ $endif$
 %
 % Fonts
 %
+\usepackage[mathbf=sym]{unicode-math}
 \usepackage{fontspec}
 \usepackage{realscripts}
-\setmainfont[SizeFeatures={Size=10.04}]{Arial}
-\setsansfont[SizeFeatures={Size=10.04}]{Arial}
-\setmonofont[SizeFeatures={Size=9.036}]{Source Code Pro Light}
+\setmainfont{Source Sans Pro}
+\setsansfont{Source Sans Pro}
+\setmonofont[BoldFont=Source Code Pro]{Source Code Pro Light}
 
 \usepackage[Dingbats]{ucharclasses}
 \newfontfamily{\symbolfont}{Source Serif Pro}
 \setTransitionsForSymbols{\symbolfont}{}
-
 
 %
 % Colors
@@ -104,6 +103,7 @@ $endif$
 \definecolor{Purple}       {cmyk} {0.82, 0.78, 0.00, 0.00}
 \definecolor{Brick}        {cmyk} {0.00, 0.99, 0.91, 0.33}
 
+\AtBeginDocument{\color{CoolGray}}
 
 %
 % Set up page size and margins
@@ -112,7 +112,7 @@ $endif$
 \ifthenelse{\equal{$if(papersize)$$papersize$$else$letter$endif$}{a4}}{
   \geometry{a4paper,margin=2.5cm}
 }{
-  \geometry{letterpaper,margin=1in,bmargin=2in}
+  \geometry{letterpaper,margin=1in,tmargin=1.75in, bmargin=0.5in, head=88pt}
 }
 \geometry{portrait,centering,includefoot}
 
@@ -137,74 +137,45 @@ $endif$
 %
 % Header and footer
 %
-\usepackage{fancyhdr}
-\usepackage{lastpage}
-\usepackage{calc}
-\pagestyle{fancy}
 
+\usepackage[headsepline=0.5pt:]{scrlayer-scrpage}
+\usepackage{lastpage}
 \colorlet{header-color}{CoolGray}
 \colorlet{footer-color}{LightGray}
-\fancyhf{}  % clear header and footer fields
 
-\setlength\headheight{1.25in}
-\fancyhead[L]{{\includegraphics[height=0.75in]{logo.pdf} \\ {\color{header-color}\fontsize{14pt}{24pt}\sffamily\bfseries $title$}}}
-\fancyhead[C]{{\parbox[t][.75in][t]{2.5in}{\vspace{5pt}\centering{\color{header-color}\fontsize{16pt}{16pt}\sffamily\bfseries SCIENGDOX \\* DOCUMENT}} \\}}
-\fancyhead[R]{{\parbox[t][.75in][t]{1.25in}{\vspace{5pt}{\color{header-color}\fontsize{14pt}{14pt}\sffamily\bfseries $docnumber$\\*REV $docversion$}} \\}}
-\fancyfoot[L]{{\color{footer-color}\sffamily\tiny {Example Organization, Inc.}}}
-\fancyfoot[C]{{\color{footer-color}\sffamily\small Compiled from\\*$gitrepo$$if(githash)$~($githash$)$endif$}}
-\fancyfoot[R]{{\color{footer-color}Page \thepage~of~\pageref*{LastPage}}}
+\setkomafont{pagehead}{\color{CoolGray}\fontsize{12pt}{12pt}\sffamily\bfseries\normalfont}
+\setkomafont{pagefoot}{\color{LightGray}\sffamily\normalfont}
+\ihead{{\includegraphics[height=0.75in]{logo.pdf} \\ {\color{header-color}\fontsize{14pt}{24pt}\sffamily\bfseries $title$} \\}}
+\chead{{\parbox[t][.75in][t]{2.5in}{\vspace{5pt}\centering{\color{header-color}\fontsize{16pt}{16pt}\sffamily\bfseries SCIENGDOX \\* DOCUMENT}} \\}}
+\ohead{{\parbox[t][.75in][t]{1.25in}{\vspace{5pt}{\color{header-color}\fontsize{14pt}{14pt}\sffamily\bfseries $docnumber$\\*REV $docversion$}} \\}}
+\ifoot{{\color{footer-color}\sffamily\small {Example Organization, Inc.}}}
+\cfoot{{\color{footer-color}\sffamily\small Compiled from\\*$gitrepo$$if(githash)$~($githash$)$endif$}}
+\ofoot{{\color{footer-color}Page \thepage~of~\pageref*{LastPage}}}
 
-\renewcommand{\headrulewidth}{0.5pt}
-\renewcommand{\footrulewidth}{0.5pt}
-\renewcommand{\headrule}{\hbox to\headwidth{\color{header-color}\leaders\hrule height \headrulewidth\hfill}}
-\renewcommand{\footrule}{\hbox to\headwidth{\color{footer-color}\leaders\hrule height \footrulewidth\hfill}}
-
+\setlength{\footheight}{46pt}
 
 %
+% Headings
+%
+
 % H1 heading (Section)
-%
-\usepackage{titlesec}
-\titleformat{\section}[hang]
-{\color{MediumBlue}\fontsize{20.08pt}{24.096pt}\sffamily\bfseries}
-{\thesection}{0.5em}{}[]
-\titlespacing{\section}{0pt}{24.096pt plus 2pt minus 1pt}{16.064pt plus 2pt minus 1pt}
-\newcommand{\sectionbreak}{\clearpage}  % start sections on new page
+\setkomafont{section}{\color{MediumBlue}\fontsize{20.08pt}{24.096pt}\sffamily\bfseries}
 
-
-%
 % H2 heading (Subsection)
-%
-\titleformat{\subsection}[hang]
-{\color{MediumBlue}\fontsize{16.064pt}{19.2768pt}\sffamily}
-{\thesubsection}{0.5em}{}[]
-\titlespacing{\subsection}{0pt}{24.096pt plus 2pt minus 1pt}{10.04pt plus 2pt minus 1pt}
+\setkomafont{subsection}{\color{MediumBlue}\fontsize{16.064pt}{19.2768pt}\sffamily\normalfont}
 
-
-%
 % H3 heading (Sub-subsection)
-%
-\titleformat{\subsubsection}[hang]
-{\color{MediumBlue}\fontsize{14.056pt}{16.8672pt}\sffamily}
-{\thesubsubsection}{0.5em}{}[]
-\titlespacing{\subsubsection}{0pt}{12.048pt plus 2pt minus 1pt}{6.024pt plus 2pt minus 1pt}
+\setkomafont{subsubsection}{\color{MediumBlue}\fontsize{14pt}{16pt}\sffamily\normalfont}
 
-
-%
 % H4 heading (Paragraph)
-%
-\titleformat{\paragraph}[hang]
-{\color{MediumBlue}\fontsize{12.048pt}{14.4576pt}\sffamily\bfseries}
-{}{0.5em}{}[]
-\titlespacing{\paragraph}{0pt}{18.072pt plus 2pt minus 1pt}{6.024pt plus 2pt minus 1pt}
+\RedeclareSectionCommands[
+    beforeskip=-3.25ex plus -1ex minus -0.2ex,
+    afterskip=1sp,% smallest possible positive value
+]{paragraph}
+\setkomafont{paragraph}{\color{MediumBlue}\fontsize{12.048pt}{14.4576pt}\sffamily\bfseries}
 
-
-%
 % H5 heading (Subparagraph)
-%
-\titleformat{\subparagraph}[hang]
-{\color{CoolGray}\fontsize{12.048pt}{12.048pt}\sffamily\bfseries}
-{}{0.5em}{}[]
-\titlespacing{\subparagraph}{0pt}{12.048pt plus 2pt minus 1pt}{3.012pt plus 2pt minus 1pt}
+\setkomafont{subparagraph}{\color{CoolGray}\fontsize{12.048pt}{12.048pt}\sffamily\bfseries}
 
 
 %
@@ -235,16 +206,23 @@ $endif$
 
 
 %
+% Footnotes
+%
+\addtokomafont{footnote}{\color{CoolGray}}
+\addtokomafont{footnoterule}{\color{CoolGray}}
+\setlength{\footskip}{1in}
+
+
+%
 % Tables
 %
-\usepackage{tabu,multirow}
 $if(tables)$
 \usepackage{longtable,booktabs}
 % Fix footnotes in tables (requires footnote package)
 \IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{longtable}}{}
 
 \arrayrulecolor{CoolGray}        % color of \toprule, \midrule, \bottomrule
-\setlength\heavyrulewidth{2pt}        % thickness of \toprule, \bottomrule
+\setlength\heavyrulewidth{1pt}        % thickness of \toprule, \bottomrule
 \renewcommand{\arraystretch}{1.3}     % spacing (padding)
 \colorlet{table-row-color}{LightGray!10}
 \rowcolors{3}{}{}                     % row color
@@ -323,11 +301,15 @@ $endif$
 \colorlet{listing-comment}{Purple}
 
 \usepackage{listings}
+\usepackage{scrhack}
 \lstdefinestyle{listing_style}{
   aboveskip         = 1.0em,
   backgroundcolor   = \color{listing-background},
   basicstyle        = \color{listing-text-color}\fontsize{10.04pt}{12.048pt}\ttfamily\linespread{1.15},
-  belowcaptionskip  = 1.0em,
+  belowcaptionskip  = 0.5em,
+  frame             = lines,
+  rulecolor         = \color{CoolGray},
+  framerule         = 1pt,
   breakatwhitespace = false,
   breaklines        = true,
   captionpos        = t,
@@ -337,14 +319,14 @@ $endif$
   keepspaces        = true,
   keywordstyle      = \color{listing-keyword}\bfseries,
   numbers           = left,
-  numbersep         = 2em,
+  numbersep         = 1.0em,
   numberstyle       = \color{listing-numbers}\ttfamily,
   showstringspaces  = false,
   showtabs          = false,
   stepnumber        = 1,
   stringstyle       = \color{listing-string},
   tabsize           = 2,
-  xleftmargin       = 2em,
+  xleftmargin       = 1.5em,
   classoffset       = 0,
   sensitive         = true,
   literate          =
@@ -376,17 +358,6 @@ $endif$
   commentstyle    = \color{listing-comment},
   stringstyle     = \color{listing-string},
   identifierstyle = \color{listing-identifier}
-}
-
-\DeclareCaptionFormat{listingcaption}{#1#2#3\vspace{-8pt}\textcolor{CoolGray}{\rule{\dimexpr\textwidth}{1pt}}}
-\captionsetup[lstlisting]{format=listingcaption,skip=15pt,justification=raggedright,singlelinecheck=false}
-\BeforeBeginEnvironment{lstlisting}{%
-  \textcolor{CoolGray}{\rule{\dimexpr\textwidth}{2pt}}
-  \vspace{-1.8\parskip}
-}
-\AfterEndEnvironment{lstlisting}{%
-  \vspace{-1.5\parskip}
-  \textcolor{CoolGray}{\rule{\dimexpr\textwidth}{2pt}}
 }
 
 % number listings by section
@@ -435,13 +406,14 @@ $if(numbersections)$
 \setcounter{secnumdepth}{3}
 $endif$
 
-\AtBeginDocument{%
-  \newcaptionname{english}\lstlistlistingname{List of Code Listings}%
+\AtBeginDocument{
+  \newcaptionname{english}\lstlistlistingname{List of Code Listings}
 }
 
-\usepackage{tocstyle}
-\settocstylefeature{entryhook}{\color{black}\sffamily}
-\settocfeature[toc][1]{entryhook}{\color{black}\sffamily\bfseries}
+\setkomafont{sectionentry}{\color{CoolGray}\fontsize{12.048pt}{12.048pt}\sffamily\bfseries}
+\RedeclareSectionCommand[tocindent=0pt]{section}
+\RedeclareSectionCommand[tocindent=0pt]{subsection}
+\RedeclareSectionCommand[tocindent=18pt]{subsubsection}
 
 
 %
@@ -468,7 +440,7 @@ $endif$
 $if(toc)$
 {
 $if(colorlinks)$
-\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$CoolGray$endif$}
 $endif$
 \setcounter{tocdepth}{$toc-depth$}
 \tableofcontents
@@ -477,21 +449,21 @@ $endif$
 
 $if(lot)$
 {
-\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$CoolGray$endif$}
 \listoftables
 }
 $endif$
 
 $if(lof)$
 {
-\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$CoolGray$endif$}
 \listoffigures
 }
 $endif$
 
 $if(lol)$
 {
-\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$$endif$}
+\hypersetup{linkcolor=$if(toccolor)$$toccolor$$else$CoolGray$endif$}
 \listoflistings
 }
 $endif$
