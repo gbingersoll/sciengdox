@@ -97,6 +97,9 @@ parser.add_argument(
     '-v', '--verbose', action='store_true', default=False,
     help='show verbose pandoc output')
 parser.add_argument(
+    '--self-contained', action='store_true', default=False,
+    help='generate self-contained HTML output')
+parser.add_argument(
     '--statics', type=str, default=['*.bib'], nargs='*',
     help='patterns of other files needed by pandoc in the '
          'output directory (e.g. *.bib)')
@@ -266,7 +269,9 @@ if build_html:
     if stylesheet_file:
         pandoc_params.append(f'-Mcss={stylesheet_file}')
     if args.verbose:
-        pandoc_params.append(f'--verbose')
+        pandoc_params.append('--verbose')
+    if args.self_contained:
+        pandoc_params.append('--self-contained')
 
     completedProcess = subprocess.run(pandoc_params,
                                       cwd=output_dir,
