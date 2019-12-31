@@ -12,6 +12,7 @@ $teal: #007C8A;
 $brick: #AB121C;
 $gold: #D0A747;
 $green: #00A04F;
+$light-gray: #B6B8BA;
 
 $main-text-color: $cool-gray;
 $light-blue-fill: #D3DCE7;
@@ -265,6 +266,10 @@ div.listing {
   }
 }
 
+pre.sourceCode {
+  border-left: 3px solid $medium-blue;
+}
+
 code {
   font: 100% $code-font-stack;
   color: #222;
@@ -279,6 +284,25 @@ code {
   }
   span.st {
     color: $gold;
+  }
+
+  counter-reset: line;
+
+  & .sourceLine {
+    counter-increment: line;
+    &:before {
+      display: inline-block;
+      min-width: 25px;
+      padding-right: 10px;
+
+      color: $light-gray;
+      font-size: 0.8em;
+      text-decoration: none;
+      text-align: right;
+
+      content: counter(line);
+      -webkit-user-select: none;
+    }
   }
 }
 
