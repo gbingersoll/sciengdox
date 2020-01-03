@@ -496,3 +496,29 @@ def test_Table_markdown_returns_a_headerless_grid_table_string():
     tbl.headerless = False
     lines = tbl.markdown('my caption', 'tbl:label', 'lcr').split('\n')
     assert lines[4] == '+:=====+:==========:+======:+'
+
+
+def test_Table_markdown_adds_footnote_definitions_to_markdown():
+    tbl = Table([['abc def', 'bcd [^bcdNote]', 'xyz'],
+                 ['egg [^eggNote]', 'dog walker', 'guppy'],
+                 ['bird', 'octopus', 'cat food']])
+    notes = {
+        'bcdNote': 'a note about bcd',
+        'eggNote': 'a note about eggs',
+    }
+    mkdn = tbl.markdown('my caption', 'tbl:label', footnotes=notes)
+    lines = mkdn.split('\n')
+    # assert len(lines) == 13
+    assert lines[0] == '+----------------+----------------+----------+'
+    assert lines[1] == '| abc def        | bcd [^bcdNote] | xyz      |'
+    assert lines[2] == '+================+================+==========+'
+    assert lines[3] == '| egg [^eggNote] | dog walker     | guppy    |'
+    assert lines[4] == '+----------------+----------------+----------+'
+    assert lines[5] == '| bird           | octopus        | cat food |'
+    assert lines[6] == '+----------------+----------------+----------+'
+    assert lines[7] == ''
+    assert lines[8] == 'Table: my caption {#tbl:label}'
+    assert lines[9] == ''
+    assert lines[10] == '[^bcdNote]: a note about bcd'
+    assert lines[11] == '[^eggNote]: a note about eggs'
+    assert lines[12] == ''

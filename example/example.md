@@ -348,4 +348,26 @@ tbl = Table([['abc def', 'bcd', 'xyz'],
 
 `print(tbl.markdown('A Computed Table', 'tbl:computed_table', 'crl'))`{.python .md}
 
+One catch with the way the interpreter works means that if your Python-built
+table has footnotes, you need to define them in Python code and not directly
+in the Markdown file.  Like this:
+
+```{.python .echo #lst:table_with_footnotes caption="Python for building a table with footnotes"}
+from sciengdox.tables import Table
+tbl = Table([['abc def', 'bcd', 'xyz'],
+             ['egg[^eggNote]', 'dog walker', 'guppy'],
+             ['bird[^birdNote]', 'octopus', 'cat food']],
+            max_widths=[4, None, 4])
+notes = {
+    'eggNote': "A very young bird",
+    'birdNote': "An old egg"
+}
+tbl_markdown = tbl.markdown('A Computed Table with Footnotes',
+                            'tbl:computed_table_with_notes',
+                            'crl',
+                            footnotes=notes)
+```
+
+`print(tbl_markdown)`{.python .md}
+
 # References

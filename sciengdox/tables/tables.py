@@ -139,7 +139,7 @@ class Table(object):
     def append_column(self, cell_strings, max_width=None):
         self._add_new_col(cell_strings, max_width)
 
-    def markdown(self, caption, label, alignments=None):
+    def markdown(self, caption, label, alignments=None, footnotes=None):
         # build horizontal dividers
         column_widths = self._column_widths()
         alignments = alignments or 'd'*self.num_cols
@@ -175,8 +175,15 @@ class Table(object):
         # Build caption and label
         caption = f"\n\nTable: {caption} {{#{label}}}\n"
 
+        # Build footnote text
+        footnote_str = ''
+        if footnotes is not None:
+            for name in footnotes:
+                footnote_str += f"\n[^{name}]: {footnotes[name]}"
+            footnote_str += '\n'
+
         # Combine everything and return
-        return ('\n'.join(strings) + caption)
+        return ('\n'.join(strings) + caption + footnote_str)
 
     def _build_new_row(self, cell_strings, max_widths=None):
         if len(self.max_widths) and max_widths is not None:
