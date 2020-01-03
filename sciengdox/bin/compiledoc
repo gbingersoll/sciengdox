@@ -73,6 +73,18 @@ def parse_git_hash():
             os.popen('git rev-parse --short HEAD 2> /dev/null').read().strip())
 
 
+def run_pandoc(params, output_dir, verbose=False):
+    completedProcess = subprocess.run(params,
+                                      cwd=output_dir,
+                                      capture_output=True)
+    if verbose:
+        print(Fore.YELLOW + f'{completedProcess.stdout.decode()}')
+
+    if completedProcess.returncode != 0:
+        print(Fore.RED + f'{completedProcess.stderr.decode()}')
+        exit(completedProcess.returncode)
+
+
 # ------------------------------------------------------------------------------
 
 parser = argparse.ArgumentParser(
@@ -104,8 +116,13 @@ parser.add_argument(
     help='patterns of other files needed by pandoc in the '
          'output directory (e.g. *.bib)')
 
+md_group = parser.add_mutually_exclusive_group()
+md_group.add_argument('--md', action='store_true', default=False,
+                        help='build intermediate markdown output')
+md_group.add_argument('--no-md', action='store_true',
+                        help='do not build intermediate markdown output')
 html_group = parser.add_mutually_exclusive_group()
-html_group.add_argument('--html', action='store_true', default=True,
+html_group.add_argument('--html', action='store_true', default=False,
                         help='build HTML output')
 html_group.add_argument('--no-html', action='store_true',
                         help='do not build HTML output')
@@ -144,11 +161,12 @@ pandoc_citeproc = find_executable('pandoc-citeproc', args.pandoc_citeproc)
 pandoc_crossref = find_executable('pandoc-crossref', args.pandoc_crossref)
 
 # Check specified outputs
+build_md = (args.md or args.all) and not args.no_md
 build_html = (args.html or args.all) and not args.no_html
 build_pdf = (args.pdf or args.all) and not args.no_pdf
-if not (build_html or build_pdf):
-    print_error('Not building HTML or PDF.  Nothing to build.')
-    exit(-1)
+if not (build_md or build_html or build_pdf):
+    print(Fore.YELLOW + "No output specified.  Building HTML.")
+    build_html = True
 
 # Build absolute paths to inputs, outputs, templates
 input_md = (args.input_md if os.path.isabs(args.input_md)
@@ -199,6 +217,29 @@ if len(static_files) > 0:
             shutil.copytree(f, result_dir)
         else:
             shutil.copy(f, output_dir)
+
+if build_md:
+    # Build Markdown output
+    output_file = os.path.join(output_dir, input_basename + '.md')
+    print(Fore.BLUE + f"Building Markdown output: {output_file}")
+
+    print(Fore.CYAN + f"Running pandoc")
+    pandoc_params = [
+        "pandoc",
+        input_md,
+        "--output", output_file,
+        "--from", "markdown",
+        "--filter", pandoc_pythonexec,
+        # zzz
+        # "--filter", pandoc_crossref,
+        # "--filter", pandoc_citeproc,
+        # "-Mcref",
+        # "-Mcolorlinks",
+        # "-Mlistings",
+        f"-Mgithash={parse_git_branch()}{parse_git_hash()}"
+    ]
+
+    run_pandoc(pandoc_params, output_dir, verbose=args.verbose)
 
 if build_html:
     # Build HTML output
@@ -273,15 +314,7 @@ if build_html:
     if args.self_contained:
         pandoc_params.append('--self-contained')
 
-    completedProcess = subprocess.run(pandoc_params,
-                                      cwd=output_dir,
-                                      capture_output=True)
-    if args.verbose:
-        print(Fore.YELLOW + f'{completedProcess.stdout.decode()}')
-
-    if completedProcess.returncode != 0:
-        print(Fore.RED + f'{completedProcess.stderr.decode()}')
-        exit(completedProcess.returncode)
+    run_pandoc(pandoc_params, output_dir, verbose=args.verbose)
 
 if build_pdf:
     # Build PDF output
@@ -327,15 +360,7 @@ if build_pdf:
     if args.verbose:
         pandoc_params.append(f'--verbose')
 
-    completedProcess = subprocess.run(pandoc_params,
-                                      cwd=output_dir,
-                                      capture_output=True)
-    if args.verbose:
-        print(Fore.YELLOW + f'{completedProcess.stdout.decode()}')
-
-    if completedProcess.returncode != 0:
-        print(Fore.RED + f'{completedProcess.stderr.decode()}')
-        exit(completedProcess.returncode)
+    run_pandoc(pandoc_params, output_dir, verbose=args.verbose)
 
 print(Fore.GREEN + 'Complete')
 print(Style.RESET_ALL)

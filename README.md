@@ -72,6 +72,21 @@ environment by running:
 $ pipenv install -e .[examples]
 ```
 
+### PDF Generation
+
+To generate PDF files through Pandoc, you need to have `xelatex` installed.
+On Linux/WSL:
+
+```shell
+$ sudo apt-get install texlive-xetex
+```
+
+On macOS:
+
+```shell
+$ brew cask install mactex
+```
+
 ### Fonts
 
 The example templates rely on having a few fonts installed.
@@ -124,19 +139,27 @@ $ npm install -g sass
 This Python library provides a script, `compiledoc`, that will appear in your
 virtual environment's path once the library is installed.  In general, you
 provide an output directory and an input markdown file, and it will build an
-HTML output.
+HTML output when the `--html` flag is used (also by default).
 
 ```shell
-$ compiledoc -o output mydoc.md
+$ compiledoc -o output --html mydoc.md
 ```
 
-To build a PDF:
+To build a PDF (via `xelatex`):
 
 ```shell
 $ compiledoc -o output --pdf mydoc.md
 ```
 
-To build both HTML and PDF:
+To build a Markdown file with executable Python output included (e.g. for
+debugging purposes), specify `--md`.  This will generate a file in the output
+directory with (perhaps confusingly) the same name as the input:
+
+```shell
+$ compiledoc -o output --md mydoc.md
+```
+
+To build everything, specify `--all`:
 
 ```shell
 $ compiledoc -o output --all mydoc.md
@@ -194,7 +217,7 @@ a temporary `trigger.json` file:
             "compiledoc",
             "-o",
             "output",
-            "--no-pdf",
+            "--html",
             "notebook.md"
         ]
     }
@@ -242,3 +265,4 @@ tail -f /usr/local/var/run/watchman/<username>-state/log
 (Note that on Windows/WSL, to get `tail` to work the way you expect, you need to
 add `---disable-inotify` to the command; and yes, that's three `-` for some
 reason.)
+
