@@ -25,9 +25,9 @@ class PythonRunner(object):
                     this_level = 0
                 else:
                     # find next indent level
-                    for l in lines[(idx + 1):]:
-                        if l != "":
-                            this_level = self._indent_level(l)
+                    for el in lines[(idx + 1):]:
+                        if el != "":
+                            this_level = self._indent_level(el)
                             break
                 line = '    ' * this_level
 
@@ -35,13 +35,19 @@ class PythonRunner(object):
 
             # Send the command and capture the result
             self.proc.sendline(line)
+
+            # Wait for newline to eliminate the echoed command
+            self.proc.expect(r'\r\n')
+
             self.proc.expect([PythonRunner.prompt, PythonRunner.continuation])
             result = self.proc.before.decode('utf-8')
+
+            # Remove any leading line break from result
+            result = re.sub(r'^\r?\n', '', result)
+
             if echo_input:
-                result = (repl_prefix or '') + result
-            else:
-                # Remove input line and any leading line break
-                result = re.sub(r'^\r?\n', '', result[len(line):])
+                result = (repl_prefix or '') + line + '\n' + result
+
             output += result
 
         return output
