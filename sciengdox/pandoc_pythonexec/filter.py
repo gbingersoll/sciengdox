@@ -178,9 +178,9 @@ def exec_code_blocks(elem, doc):
 
     if 'noexec' not in classes:
         if (type(elem) == panflute.Code and
-                re.match(r'^pq\(.*\)$', elem.text)):
-            # Handle special case of printing a quantity if all that
-            # is in the code block is `pq(value)`
+                re.match(r'^p(q|md)\(.*\)$', elem.text)):
+            # Handle special case of printing a quantity or raw markdown if all
+            # that is in the code block is `pq(value)` or `pmd(value)`
             exec_inline_python(elem, doc)
             new_element = panflute.convert_text(elem.text)[0]
             return panflute.Span(*new_element.content)
