@@ -7,6 +7,7 @@ import os
 import re
 import shutil
 import subprocess
+import asyncio
 
 
 # print a colored error message
@@ -49,28 +50,52 @@ def find_template_file(directory, basename, extension=None):
         return template_file
 
 
+# Runs a shell command asynchronously
+async def run(cmd, *args):
+    proc = await asyncio.subprocess.create_subprocess_exec(
+        cmd,
+        *args,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.STDOUT)
+    stdout, stderr = await proc.communicate()
+    if stdout:
+        stdout = stdout.decode()
+    if stderr:
+        stderr = stderr.decode()
+    return proc.returncode, stdout, stderr
+
+
 # checks if branch has something pending
 def parse_git_dirty():
-    if ("" == os.popen('git diff --ignore-submodules HEAD 2> /dev/null').read()
-                .strip()):
+    code, stdout, stderr = asyncio.run(run('git',
+                                           'diff',
+                                           '--ignore-submodules'))
+    if code == 0 and "" == stdout.strip():
         return False
     return True
 
 
 # gets the current git branch
 def parse_git_branch():
-    branch = re.search(r"^\*\s+(\w+)",
-                       os.popen('git branch --no-color 2> /dev/null').read(),
-                       re.MULTILINE).groups()[0]
+    code, stdout, stderr = asyncio.run(run('git', 'branch', '--no-color'))
+    if code != 0:
+        return ''
+    branch = re.search(r"^\*\s+(\w+)", stdout, re.MULTILINE).groups()[0]
     if parse_git_dirty():
         branch = "*" + branch
+
     return branch
 
 
 # get last commit hash prepended with @ (i.e. @8a323d0)
 def parse_git_hash():
-    return ("@" +
-            os.popen('git rev-parse --short HEAD 2> /dev/null').read().strip())
+    code, stdout, stderr = asyncio.run(run('git',
+                                           'rev-parse',
+                                           '--short',
+                                           'HEAD'))
+    if code != 0:
+        return ''
+    return "@" + stdout.strip()
 
 
 def run_pandoc(params, output_dir, verbose=False):
