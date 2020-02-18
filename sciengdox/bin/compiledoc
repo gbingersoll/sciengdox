@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 import argparse
-from colorama import Fore, Back, Style
+from colorama import init as coloramaInit, Fore, Back, Style
 import glob
 import os
 import re
 import shutil
 import subprocess
 import asyncio
+
+coloramaInit(convert=True)
 
 
 # print a colored error message
