@@ -20,6 +20,8 @@ def print_error(msg):
 # find an executable on the system path or verify an explicit location
 def find_executable(name, explicit_location):
     if explicit_location is not None:
+        if not os.path.isabs(explicit_location):
+            explicit_location = os.path.join(os.getcwd(), explicit_location)
         if not os.path.exists(explicit_location):
             print_error(f'Could not find \'{name}\' at: {explicit_location}')
             exit(-1)
