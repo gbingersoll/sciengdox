@@ -235,7 +235,8 @@ results will be included in the document.
 
 @Lst:continued_python continues from the previous one, so variables stay
 defined.  This code block also includes the `.repl` flag which simulates an
-interactive session by prefixing inputs with `>>>`.
+interactive session by prefixing inputs with the prompts from the regular
+command-line Python interpreter.
 
 ```{.python .echo .repl #lst:continued_python caption="Executed Python code continuing from the previous block and displayed like a REPL session"}
 greeter.respond("Joe")

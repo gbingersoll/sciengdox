@@ -21,7 +21,6 @@ setup(name='sciengdox',
       install_requires=[
           'numpy',
           'panflute',
-          'pexpect',
           'pint',
           'scipy'
       ],
