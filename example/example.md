@@ -231,7 +231,7 @@ greeter.speak()
 
 In general, a code block with the `.python` flag will be executed unless it also
 includes the `.noexec` flag.  If the `.echo` flag is included, the block and the
-results will be inclued in the document.
+results will be included in the document.
 
 @Lst:continued_python continues from the previous one, so variables stay
 defined.  This code block also includes the `.repl` flag which simulates an
@@ -247,7 +247,7 @@ my_value = 37
 ```
 
 The block right above this one in the markdown is not printed (because it does
-not included the `.echo` flag), but it establishes the value
+not include the `.echo` flag), but it establishes the value
 `my_value`{.python}.  This defaults to printing as plain text to match the
 surrounding paragraph, but you can also keep a result formatted as monospace
 code by including `.asCode` in its classes like this: `2*my_value`{.python
