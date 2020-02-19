@@ -258,12 +258,10 @@ def main():
             "--output", output_file,
             "--from", "markdown",
             "--filter", pandoc_pythonexec,
-            # zzz
-            # "--filter", pandoc_crossref,
-            # "--filter", pandoc_citeproc,
-            # "-Mcref",
-            # "-Mcolorlinks",
-            # "-Mlistings",
+            "--filter", pandoc_crossref,
+            "--filter", pandoc_citeproc,
+            "-Mcref",
+            "-Mlistings",
             f"-Mgithash={parse_git_branch()}{parse_git_hash()}"
         ]
 
