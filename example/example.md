@@ -278,6 +278,7 @@ We can also generate figures through code execution.
 ```{.python .echo #lst:image_gen_python caption="Executed Python code generating an image"}
 import numpy as np
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sciengdox
 from sciengdox.figures import svg_figure
