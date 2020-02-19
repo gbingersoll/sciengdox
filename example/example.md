@@ -303,6 +303,7 @@ this:
 ```{.python .echo .repl #lst:units_python caption="Executed Python using units math"}
 from sciengdox.units import Q_, ureg, pq
 import sciengdox.constants as constants
+from sciengdox import pmd
 
 mass = 10.0 * ureg('kg')
 acceleration = constants.g
@@ -312,6 +313,9 @@ print(force.to('N'))
 
 You can also print neat quantities (i.e. values with units) inline using the
 `pq()`{.noexec} macro like this force value: `pq(force)`.
+
+(Note there is also a `pmd()`{.noexec} macro that lets you print out markdown
+stored in a Python string like: `pmd('Nd^3+^:Y~3~Al~5~O~12~')`.)
 
 # Tables
 
