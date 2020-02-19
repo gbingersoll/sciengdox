@@ -30,10 +30,8 @@ setup(name='sciengdox',
       },
       entry_points={
           'console_scripts': [
+              'compiledoc=sciengdox.compiledoc:main',
               'pandoc-pythonexec=sciengdox.pandoc_pythonexec.filter:main']
       },
-      scripts=[
-          'sciengdox/bin/compiledoc',
-      ],
       include_package_data=True,
       zip_safe=False)
