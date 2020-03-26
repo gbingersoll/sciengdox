@@ -72,6 +72,19 @@ environment by running:
 $ pipenv install -e .[examples]
 ```
 
+### Windows
+
+The underlying Pandoc filter for executing Python code embedded in your
+documents relies on inter-process communication with a Python REPL behind the
+scenes.  The default inter-process character encoding for Python on Windows is
+[CP-1252](https://en.wikipedia.org/wiki/Windows-1252), and this can cause
+problems if your Python scripts generate output with special characters (and if
+you are doing any scientific or engineering writing, they definitely will).
+
+Fortunately, this is easily worked-around by setting a Windows environment
+variable `PYTHONIOENCODING` to `utf-8`.  After setting this, be sure to restart
+any open terminal windows for the change to take effect.
+
 ### PDF Generation
 
 To generate PDF files through Pandoc, you need to have `xelatex` installed.

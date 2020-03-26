@@ -96,7 +96,7 @@ class PythonRunner(object):
             if output[-len(continuation_bytes):] == continuation_bytes:
                 break
             output += await self._proc.stdout.read(1024)
-        return output.decode('Latin-1')
+        return output.decode()
 
     def _indent_level(self, line):
         m = re.search(r'^\s*', line)
@@ -267,6 +267,18 @@ def handle_postponed_replacements(elem, doc):
 
 
 def main(doc=None):
+    from sys import platform
+    if platform == "win32":
+        # Check that the user's system is set to use UTF-8 for IO
+        import os
+        try:
+            ioencoding = os.environ["PYTHONIOENCODING"]
+        except KeyError:
+            ioencoding = 'undefined'
+        if ioencoding != 'utf-8':
+            raise Exception('Fix interprocess IO by setting a Windows '
+                            'environment variable: PYTHONIOENCODING=utf-8')
+
     doc = panflute.load()
     asyncio.run(walk_and_execute_code(doc))
     doc = doc.walk(handle_postponed_replacements)
