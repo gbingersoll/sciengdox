@@ -132,7 +132,7 @@ def main():
     parser.add_argument(
         '--sass', type=str,
         help='full path to sass executable for converting stylesheet.  '
-            'If omitted, system path is used')
+             'If omitted, system path is used')
     parser.add_argument(
         '-v', '--verbose', action='store_true', default=False,
         help='show verbose pandoc output')
@@ -142,13 +142,13 @@ def main():
     parser.add_argument(
         '--statics', type=str, default=['*.bib'], nargs='*',
         help='patterns of other files needed by pandoc in the '
-            'output directory (e.g. *.bib)')
+             'output directory (e.g. *.bib)')
 
     md_group = parser.add_mutually_exclusive_group()
     md_group.add_argument('--md', action='store_true', default=False,
-                            help='build intermediate markdown output')
+                          help='build intermediate markdown output')
     md_group.add_argument('--no-md', action='store_true',
-                            help='do not build intermediate markdown output')
+                          help='do not build intermediate markdown output')
     html_group = parser.add_mutually_exclusive_group()
     html_group.add_argument('--html', action='store_true', default=False,
                             help='build HTML output')
@@ -156,28 +156,28 @@ def main():
                             help='do not build HTML output')
     pdf_group = parser.add_mutually_exclusive_group()
     pdf_group.add_argument('--pdf', action='store_true', default=False,
-                        help='build PDF output')
+                           help='build PDF output')
     pdf_group.add_argument('--no-pdf', action='store_true',
-                        help='do not build PDF output')
+                           help='do not build PDF output')
     parser.add_argument(
         '--all', action='store_true', default=False,
         help='build all output formats (can be combined with --no-<format>)')
     parser.add_argument(
         '--pandoc', type=str,
         help='full path to pandoc executable.  '
-            'If omitted, system path is used')
+             'If omitted, system path is used')
     parser.add_argument(
         '--pandoc-pythonexec', type=str,
         help='full path to pandoc-pythonexec filter.  '
-            'If omitted, system path is used')
+             'If omitted, system path is used')
     parser.add_argument(
         '--pandoc-crossref', type=str,
         help='full path to pandoc-crossref filter.  '
-            'If omitted, system path is used')
+             'If omitted, system path is used')
     parser.add_argument(
         '--pandoc-citeproc', type=str,
         help='full path to pandoc-citeproc filter.  '
-            'If omitted, system path is used')
+             'If omitted, system path is used')
 
     args = parser.parse_args()
 
@@ -210,7 +210,7 @@ def main():
                     else os.path.join(os.getcwd(), args.template_dir))
 
     output_dir = (args.output_dir if os.path.isabs(args.output_dir)
-                else os.path.join(os.getcwd(), args.output_dir))
+                  else os.path.join(os.getcwd(), args.output_dir))
     if os.path.exists(output_dir):
         print(Fore.BLUE + f"Using output directory: {output_dir}")
     else:
@@ -221,7 +221,7 @@ def main():
     images_dir = os.path.join(os.getcwd(), args.images_dir)
     if os.path.exists(images_dir):
         print(Fore.BLUE +
-            f"Copying images to output directory from: {args.images_dir}")
+              f"Copying images to output directory from: {args.images_dir}")
         output_images = os.path.join(output_dir, args.images_dir)
         if os.path.exists(output_images):
             shutil.rmtree(output_images)
@@ -235,7 +235,7 @@ def main():
 
     if len(static_files) > 0:
         print(Fore.BLUE +
-            f"Copying static files to output directory:")
+              f"Copying static files to output directory:")
         for f in static_files:
             print(f"    {f}")
             if os.path.isdir(f):
@@ -274,12 +274,14 @@ def main():
         template_file = find_template_file(template_dir, args.template, "html")
         if template_file is None:
             print(Fore.YELLOW +
-                f"Did not find an HTML template in: {template_dir}")
+                  f"Did not find an HTML template in: {template_dir}")
         else:
             print(Fore.CYAN + f"Using template: {template_file}")
 
         # Look for SCSS or CSS style file in the template directory
-        stylesheet_file = find_template_file(template_dir, args.template, 'scss')
+        stylesheet_file = find_template_file(template_dir,
+                                             args.template,
+                                             'scss')
         if stylesheet_file is not None:
             sass_exec = find_executable('sass', args.sass)
             infile = stylesheet_file
@@ -294,8 +296,8 @@ def main():
                             "compressed"])
         else:
             stylesheet_file = find_template_file(template_dir,
-                                                args.template,
-                                                'css')
+                                                 args.template,
+                                                 'css')
             if stylesheet_file:
                 shutil.copy(stylesheet_file, output_dir)
 
@@ -347,10 +349,12 @@ def main():
         output_file = os.path.join(output_dir, input_basename + '.pdf')
         print(Fore.BLUE + f"Building PDF output: {output_file}")
 
-        template_file = find_template_file(template_dir, args.template, "latex")
+        template_file = find_template_file(template_dir,
+                                           args.template,
+                                           "latex")
         if template_file is None:
             print(Fore.YELLOW +
-                f"Did not find a LaTeX template in: {template_dir}")
+                  f"Did not find a LaTeX template in: {template_dir}")
         else:
             print(Fore.CYAN + f"Using template: {template_file}")
 

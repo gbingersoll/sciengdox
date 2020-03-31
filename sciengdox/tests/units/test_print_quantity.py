@@ -21,4 +21,3 @@ def test_pq_outputs_with_provided_precision(capsys):
 def test_pq_outputs_scientific_notation(capsys):
     pq(Q_(1234000000.12345678, 'm/s^2'), scientific=True)
     assert capsys.readouterr().out == '1.23e+09 m/s^2^\n'
-
