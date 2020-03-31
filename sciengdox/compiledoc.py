@@ -1,7 +1,7 @@
 import argparse
 from colorama import init as coloramaInit, Fore, Back, Style
 import glob
-import os
+from pathlib import Path
 import re
 import shutil
 import subprocess
@@ -18,10 +18,10 @@ def print_error(msg):
 # find an executable on the system path or verify an explicit location
 def find_executable(name, explicit_location):
     if explicit_location is not None:
-        if not os.path.isabs(explicit_location):
-            explicit_location = os.path.join(os.getcwd(), explicit_location)
-        if not os.path.exists(explicit_location):
-            print_error(f'Could not find \'{name}\' at: {explicit_location}')
+        explicit_location = Path(explicit_location)
+        if not explicit_location.exists():
+            print_error(f"Could not find '{name}' at:" +
+                        f"{explicit_location.absolute()}")
             exit(-1)
         return explicit_location
     else:
@@ -29,25 +29,21 @@ def find_executable(name, explicit_location):
         if executable is None:
             print_error(f'Could not find \'{name}\' on system path.')
             exit(-1)
-        return executable
+        return Path(executable)
 
 
 # find a template file of the correct type in the provided path
 def find_template_file(directory, basename, extension=None):
     extension = f'.{extension}' if extension else ''
     if basename is None:
-        search_files = glob.glob(os.path.join(
-                                     directory,
-                                     '**',
-                                     f'*{extension}'),
-                                 recursive=True)
+        search_files = list(directory.rglob(f"*{extension}"))
         if len(search_files) == 0:
             return None
         return search_files[0]
     else:
-        template_file = os.path.join(directory, f'{basename}{extension}')
-        if not os.path.exists(input_md):
-            print_error(f'File does not exist: {template_file}')
+        template_file = directory.joinpath(f'{basename}{extension}')
+        if not template_file.exists():
+            print_error(f'File does not exist: {template_file.absolute()}')
             exit(-3)
         return template_file
 
@@ -100,9 +96,9 @@ def parse_git_hash():
     return "@" + stdout.strip()
 
 
-def run_pandoc(params, output_dir, verbose=False):
+def run_pandoc(params, output_path, verbose=False):
     completedProcess = subprocess.run(params,
-                                      cwd=output_dir,
+                                      cwd=str(output_path),
                                       capture_output=True)
     if verbose:
         print(Fore.YELLOW + f'{completedProcess.stdout.decode()}')
@@ -196,87 +192,90 @@ def main():
         print(Fore.YELLOW + "No output specified.  Building HTML.")
         build_html = True
 
-    # Build absolute paths to inputs, outputs, templates
-    input_md = (args.input_md if os.path.isabs(args.input_md)
-                else os.path.join(os.getcwd(), args.input_md))
-    if not os.path.exists(input_md):
+    # Build paths to inputs, outputs, templates
+    input_md = Path(args.input_md)
+    if not input_md.exists():
         print_error(f'Input file does not exist: {args.input_md}')
-        exit(-1)
 
-    input_dir = os.path.dirname(input_md)
-    input_basename = os.path.splitext(os.path.basename(input_md))[0]
+    input_dir = input_md.parent
+    input_basename = input_md.stem
 
-    template_dir = (args.template_dir if os.path.isabs(args.template_dir)
-                    else os.path.join(os.getcwd(), args.template_dir))
+    template_dir = Path(args.template_dir)
 
-    output_dir = (args.output_dir if os.path.isabs(args.output_dir)
-                  else os.path.join(os.getcwd(), args.output_dir))
-    if os.path.exists(output_dir):
-        print(Fore.BLUE + f"Using output directory: {output_dir}")
-    else:
-        print(Fore.BLUE + f"Creating output directory: {output_dir}")
-        os.mkdir(output_dir)
+    output_dir = Path(args.output_dir)
+    try:
+        output_dir.mkdir(parents=True)
+        print(Fore.BLUE +
+              f"Creating output directory: {output_dir.absolute()}")
+    except FileExistsError:
+        print(Fore.BLUE + f"Using output directory: {output_dir.absolute()}")
 
     # Copy static images to output directory
-    images_dir = os.path.join(os.getcwd(), args.images_dir)
-    if os.path.exists(images_dir):
-        print(Fore.BLUE +
-              f"Copying images to output directory from: {args.images_dir}")
-        output_images = os.path.join(output_dir, args.images_dir)
-        if os.path.exists(output_images):
-            shutil.rmtree(output_images)
-        shutil.copytree(images_dir, output_images)
+    images_dir = Path(args.images_dir)
+    if images_dir.exists():
+        print(Fore.BLUE + "Copying images to output directory from: " +
+              f"{images_dir.absolute()}")
+
+        output_images = output_dir.joinpath(images_dir.name)
+
+        shutil.copytree(images_dir.absolute(),
+                        output_images.absolute(),
+                        dirs_exist_ok=True)
 
     # Copy other specified static files to output directory
     static_files = []
     for g in args.statics:
-        path = g if os.path.isabs(g) else os.path.join(os.getcwd(), g)
-        static_files += glob.glob(path, recursive=True)
-
+        path = Path(g)
+        static_files += list(map(lambda f: Path(f),
+                                 glob.glob(f"{path.absolute()}")))
     if len(static_files) > 0:
         print(Fore.BLUE +
               f"Copying static files to output directory:")
         for f in static_files:
             print(f"    {f}")
-            if os.path.isdir(f):
-                result_dir = os.path.join(output_dir, os.path.basename(f))
-                if os.path.exists(result_dir):
-                    shutil.rmtree(result_dir)
-                shutil.copytree(f, result_dir)
+            if f.is_dir():
+                result_dir = output_dir.joinpath(f.name)
+                shutil.copytree(f.absolute(),
+                                result_dir.absolute(),
+                                dirs_exist_ok=True)
             else:
-                shutil.copy(f, output_dir)
+                shutil.copy(f.absolute(), output_dir.absolute())
+
+    common_pandoc_params = [
+        str(pandoc_exec.absolute()),
+        str(input_md.absolute()),
+        "--from", "markdown",
+        "--filter", str(pandoc_pythonexec.absolute()),
+        "--filter", str(pandoc_crossref.absolute()),
+        "--filter", str(pandoc_citeproc.absolute()),
+        "-Mcref",
+        "-Mlistings",
+        f"-Mgithash={parse_git_branch()}{parse_git_hash()}"
+    ]
 
     if build_md:
         # Build Markdown output
-        output_file = os.path.join(output_dir, input_basename + '.md')
-        print(Fore.BLUE + f"Building Markdown output: {output_file}")
+        output_file = output_dir.joinpath(input_basename + '.md')
+        print(Fore.BLUE + "Building Markdown output: " +
+              f"{output_file.absolute()}")
 
         print(Fore.CYAN + f"Running pandoc")
-        pandoc_params = [
-            "pandoc",
-            input_md,
-            "--output", output_file,
-            "--from", "markdown",
-            "--filter", pandoc_pythonexec,
-            "--filter", pandoc_crossref,
-            "--filter", pandoc_citeproc,
-            "-Mcref",
-            "-Mlistings",
-            f"-Mgithash={parse_git_branch()}{parse_git_hash()}"
+        pandoc_params = common_pandoc_params + [
+            "--output", str(output_file.absolute()),
         ]
-
         run_pandoc(pandoc_params, output_dir, verbose=args.verbose)
 
     if build_html:
         # Build HTML output
-        output_file = os.path.join(output_dir, input_basename + '.html')
-        print(Fore.BLUE + f"Building HTML output: {output_file}")
+        output_file = output_dir.joinpath(input_basename + '.html')
+        print(Fore.BLUE + f"Building HTML output: {output_file.absolute()}")
+
         template_file = find_template_file(template_dir, args.template, "html")
         if template_file is None:
-            print(Fore.YELLOW +
-                  f"Did not find an HTML template in: {template_dir}")
+            print(Fore.YELLOW + f"Did not find an HTML template in: " +
+                  f"{template_dir.absolute()}")
         else:
-            print(Fore.CYAN + f"Using template: {template_file}")
+            print(Fore.CYAN + f"Using template: {template_file.absolute()}")
 
         # Look for SCSS or CSS style file in the template directory
         stylesheet_file = find_template_file(template_dir,
@@ -285,13 +284,11 @@ def main():
         if stylesheet_file is not None:
             sass_exec = find_executable('sass', args.sass)
             infile = stylesheet_file
-            stylesheet_file = os.path.join(
-                output_dir,
-                os.path.splitext(os.path.basename(infile))[0] + '.css')
+            stylesheet_file = output_dir.joinpath(f"{infile.stem}.css")
             print(Fore.CYAN + f"Converting SCSS to CSS")
-            subprocess.run([sass_exec,
-                            infile,
-                            stylesheet_file,
+            subprocess.run([str(sass_exec.absolute()),
+                            str(infile.absolute()),
+                            str(stylesheet_file.absolute()),
                             "--style",
                             "compressed"])
         else:
@@ -302,39 +299,31 @@ def main():
                 shutil.copy(stylesheet_file, output_dir)
 
         if stylesheet_file:
-            stylesheet_file = os.path.basename(stylesheet_file)
+            stylesheet_file = stylesheet_file.name
 
         if template_dir:
             print(Fore.CYAN + f"Copying template files to output directory")
-            template_files = glob.glob(os.path.join(template_dir, "*"))
+            template_files = template_dir.glob('*')
             for f in template_files:
-                if os.path.isfile(f):
+                if f.is_file():
                     shutil.copy(f, output_dir)
 
         print(Fore.CYAN + f"Running pandoc")
-        pandoc_params = [
-            "pandoc",
-            input_md,
-            "--output", output_file,
-            "--from", "markdown",
+
+        pandoc_params = common_pandoc_params + [
+            "--output", str(output_file.absolute()),
             "--listings",
             "--toc",
             "--number-sections",
-            "--filter", pandoc_pythonexec,
-            "--filter", pandoc_crossref,
-            "--filter", pandoc_citeproc,
             "--mathjax",
-            "-Mcref",
             "-Mcolorlinks",
             "-MlinkReferences",
-            "-Mlistings",
             "-Mlink-citations",
-            f"-Mgithash={parse_git_branch()}{parse_git_hash()}"
         ]
+
         if template_file:
             pandoc_params.append('--template')
-            pandoc_params.append(
-                os.path.splitext(os.path.basename(template_file))[0])
+            pandoc_params.append(template_file.stem)
         if stylesheet_file:
             pandoc_params.append(f'-Mcss={stylesheet_file}')
         if args.verbose:
@@ -346,47 +335,39 @@ def main():
 
     if build_pdf:
         # Build PDF output
-        output_file = os.path.join(output_dir, input_basename + '.pdf')
-        print(Fore.BLUE + f"Building PDF output: {output_file}")
+        output_file = output_dir.joinpath(input_basename + '.pdf')
+        print(Fore.BLUE + f"Building PDF output: {output_file.absolute()}")
 
         template_file = find_template_file(template_dir,
                                            args.template,
                                            "latex")
         if template_file is None:
-            print(Fore.YELLOW +
-                  f"Did not find a LaTeX template in: {template_dir}")
+            print(Fore.YELLOW + f"Did not find a LaTeX template in: " +
+                  f"{template_dir.absolute()}")
         else:
-            print(Fore.CYAN + f"Using template: {template_file}")
+            print(Fore.CYAN + f"Using template: {template_file.absolute()}")
 
         if template_dir:
             print(Fore.CYAN + f"Copying template files to output directory")
-            template_files = glob.glob(os.path.join(template_dir, "*"))
+            template_files = template_dir.glob('*')
             for f in template_files:
-                if os.path.isfile(f):
+                if f.is_file():
                     shutil.copy(f, output_dir)
 
         print(Fore.CYAN + f"Running pandoc")
-        pandoc_params = [
-            "pandoc",
-            input_md,
-            "--output", output_file,
+
+        pandoc_params = common_pandoc_params + [
+            "--output", str(output_file.absolute()),
             "--pdf-engine", "xelatex",
-            "--from", "markdown",
             "--listings",
             "--toc",
             "--number-sections",
-            "--filter", pandoc_pythonexec,
-            "--filter", pandoc_crossref,
-            "--filter", pandoc_citeproc,
-            "-Mcref",
             "-Mcolorlinks",
-            "-Mlistings",
-            f"-Mgithash={parse_git_branch()}{parse_git_hash()}"
         ]
+
         if template_file:
             pandoc_params.append('--template')
-            pandoc_params.append(
-                os.path.splitext(os.path.basename(template_file))[0])
+            pandoc_params.append(template_file.stem)
         if args.verbose:
             pandoc_params.append(f'--verbose')
 
