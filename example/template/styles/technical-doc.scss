@@ -267,7 +267,14 @@ div.listing {
 }
 
 pre.sourceCode {
+  margin-left: 0em;
   border-left: 3px solid $medium-blue;
+  padding-left: 8px;
+}
+
+pre.numberSource {
+  margin-left: 2em;
+  padding-left: 0px;
 }
 
 code {

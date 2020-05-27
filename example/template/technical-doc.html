@@ -64,7 +64,14 @@ $endfor$
     $for(include-before)$
     $include-before$
     $endfor$
-    $body$
+
+$if(false)$
+/* Even though it looks bad here, do not indent the `body` insertion.  Indenting
+this will cause preformatted blocks, like code listings, to be indented
+strangely in the output. */
+$endif$
+$body$
+
     $for(include-after)$
     $include-after$
     $endfor$
