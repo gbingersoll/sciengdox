@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.3] - 2020-05-27
+### Fixed
+- Blank lines in code listings are no longer dropped in HTML output.
+  [#14](https://github.com/gbingersoll/sciengdox/issues/14)
+
 ## [0.6.2] - 2020-05-27
 ### Fixed
 - Moved `colorama` library to `install_requires` in `setup.py`.
@@ -18,7 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2020-05-27
 Initial public release
 
-[Unreleased]: https://github.com/gbingersoll/sciengdox/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/gbingersoll/sciengdox/compare/v0.6.3...HEAD
+[0.6.3]: https://github.com/gbingersoll/sciengdox/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/gbingersoll/sciengdox/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/gbingersoll/sciengdox/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/gbingersoll/sciengdox/releases/tag/v0.6.0
