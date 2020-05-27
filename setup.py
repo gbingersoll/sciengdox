@@ -7,7 +7,7 @@ with open(path.join(cwd, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='sciengdox',
-      version='0.6.1',
+      version='0.6.2',
       description='Science/engineering dynamic doc generation',
       long_description=long_description,
       long_description_content_type='text/markdown',
