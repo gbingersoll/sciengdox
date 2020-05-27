@@ -48,6 +48,16 @@ def find_template_file(directory, basename, extension=None):
         return template_file
 
 
+# Copy template files to the output directory from which pandoc is run
+def copy_template_to_output(template_dir, output_dir):
+    if template_dir:
+        print(Fore.CYAN + f"Copying template files to output directory")
+        template_files = template_dir.glob('*')
+        for f in template_files:
+            if f.is_file():
+                shutil.copy(f, output_dir)
+
+
 # Runs a shell command asynchronously
 async def run(cmd, *args):
     proc = await asyncio.subprocess.create_subprocess_exec(
@@ -259,6 +269,7 @@ def main():
         print(Fore.BLUE + "Building Markdown output: " +
               f"{output_file.absolute()}")
 
+        copy_template_to_output(template_dir, output_dir)
         print(Fore.CYAN + f"Running pandoc")
         pandoc_params = common_pandoc_params + [
             "--output", str(output_file.absolute()),
@@ -301,12 +312,7 @@ def main():
         if stylesheet_file:
             stylesheet_file = stylesheet_file.name
 
-        if template_dir:
-            print(Fore.CYAN + f"Copying template files to output directory")
-            template_files = template_dir.glob('*')
-            for f in template_files:
-                if f.is_file():
-                    shutil.copy(f, output_dir)
+        copy_template_to_output(template_dir, output_dir)
 
         print(Fore.CYAN + f"Running pandoc")
 
@@ -347,12 +353,7 @@ def main():
         else:
             print(Fore.CYAN + f"Using template: {template_file.absolute()}")
 
-        if template_dir:
-            print(Fore.CYAN + f"Copying template files to output directory")
-            template_files = template_dir.glob('*')
-            for f in template_files:
-                if f.is_file():
-                    shutil.copy(f, output_dir)
+        copy_template_to_output(template_dir, output_dir)
 
         print(Fore.CYAN + f"Running pandoc")
 
