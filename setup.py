@@ -22,11 +22,12 @@ setup(name='sciengdox',
           'numpy',
           'panflute',
           'pint',
+          'pysvglib',
           'scipy'
       ],
       extras_require={
           'tests': ['pytest', 'pyyaml', 'pycodestyle', 'mock', 'pytest_mock'],
-          'examples': ['matplotlib', 'colorama']
+          'examples': ['matplotlib', 'colorama', 'pysvglib']
       },
       entry_points={
           'console_scripts': [

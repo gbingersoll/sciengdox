@@ -1,3 +1,0 @@
-[submodule "pysvglib"]
-	path = pysvglib
-	url = git@github.com:gbingersoll/pysvglib
