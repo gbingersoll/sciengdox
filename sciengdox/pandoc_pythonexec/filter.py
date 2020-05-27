@@ -55,7 +55,11 @@ class PythonRunner(object):
             # Remove any leading line break from result and combine
             # with the input.  Note that this includes prompts which
             # may get removed below depending on args.
-            output += line + '\n' + re.sub(r'^\r?\n', '', result)
+            #
+            # If the input line was blank, output a space in its place to avoid
+            # the blank line getting dropped in HTML output.
+            output += ((line if line != "" else " ") + '\n' +
+                       re.sub(r'^\r?\n', '', result))
 
         # Split output into individual lines
         output_lines = output.split('\n')
