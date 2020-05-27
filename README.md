@@ -1,7 +1,7 @@
 # sciengdox
 
 A python package for creating scientific and engineering documents
-via pandoc including inline-executable Python code.
+via [`pandoc`](https://pandoc.org/) including inline-executable Python code.
 
 
 ## Key Features
@@ -11,7 +11,6 @@ via pandoc including inline-executable Python code.
 2. Codeblock execution
 3. Helper functions for generating tables, SVG
    [matplotlib](https://matplotlib.org/) plots, etc.
-4. Code execution results caching
 
 
 # Motivation
@@ -21,7 +20,7 @@ This is inspired by [`pweave`](http://mpastell.com/pweave/),
 [`knitr`](https://yihui.name/knitr/), and cousins, but I always seemed to have
 to do some pre/post-processing to get things the way I want them.  I already use
 other pandoc filters (e.g. pandoc-citeproc, pandoc-crossref), so why not simply
-have another pandoc filter that will execute inline code and insert the results.
+have another pandoc filter that will execute inline code and insert the results?
 
 Another key is getting quality diagrams from scientific python code.  For
 example, pweave automatically inserts generated images, but there doesn't seem
@@ -62,6 +61,7 @@ simply run:
 $ brew install pandoc
 $ brew install pandoc-crossref
 $ brew install pandoc-citeproc
+$ brew install librsvg
 ```
 
 Then, of course, you need to install this filter and some other helpers for the
@@ -72,7 +72,41 @@ environment by running:
 $ pipenv install -e .[examples]
 ```
 
-### Windows
+### Windows-specific Install
+
+To set up an environment for Windows from scratch including terminals, editors,
+Python, etc., see
+[this gist](https://gist.github.com/gbingersoll/c3033f8cb41c3eb865563c0711a30545).
+Additional installation steps to use this library include installing `pandoc`
+and additional filters and utilities.
+
+Install `pandoc` by [downloading the installer](https://pandoc.org/installing.html)
+and following the standard instructions.  This should also get you
+`pandoc-citeproc.exe` for managing citations.
+
+Install `pandoc-crossref` (for managing intra-document cross-references) by
+[downloading](https://github.com/lierdakil/pandoc-crossref/releases) the zipped
+Windows release.  Unzip it, and move `pandoc-crossref.exe` to a location that is
+on your system path.  For example, you can move to next to `pandoc-citeproc.exe`
+in `C:\Program Files\Pandoc`.
+
+Finally, to handle embedding SVG images in PDF documents, this library relies on
+`rsvg-convert`.  This can be installed via
+[Chocolatey](https://chocolatey.org/).  Install the Chocolatey package manager
+if you do not already have it, and then run:
+
+```shell
+$ choco install rsvg-convert
+```
+
+Instead of (or in addition to) Chocolately, you can also install the
+[Scoop](https://scoop.sh/) installer.  Scoop does not currently have a formula
+for `rsvg-convert`, but it can also be installed from
+[SourceForge](https://sourceforge.net/projects/tumagcc/files/rsvg-convert-dll-2.40.16.7z/download?use_mirror=phoenixnap)
+if you do not want to use Chocolatey.
+
+
+#### UTF-8 Note
 
 The underlying Pandoc filter for executing Python code embedded in your
 documents relies on inter-process communication with a Python REPL behind the
@@ -84,6 +118,21 @@ you are doing any scientific or engineering writing, they definitely will).
 Fortunately, this is easily worked-around by setting a Windows environment
 variable `PYTHONIOENCODING` to `utf-8`.  After setting this, be sure to restart
 any open terminal windows for the change to take effect.
+
+#### Matplotlib Note
+
+If you use `matplotlib` for generating plots in inline Python code in your
+document, you should explicity set the `Agg` backend early in your document (see
+the `example/example.md` in this repo).  Without this, document conversion can
+hang when the `svg_figure` helper function is called.
+
+Somewhere near the top of your Markdown document, add an executable Python code
+block (without `.echo` so it won't appear in the output) that includes:
+
+```python
+import matplotlib
+matplotlib.use('Agg')
+```
 
 ### PDF Generation
 
@@ -100,6 +149,16 @@ On macOS:
 $ brew cask install mactex
 ```
 
+On Windows (without WSL):
+
+[Download the MikTeX installer](https://miktex.org/download) and install as
+usual.  Then ensure that the binary folder is in your path (e.g. 
+`C:\Users\<username>\AppData\Local\Programs\MiKTeX 2.9\miktex\bin\x64\`).  Note
+that the first time you generate a document, MikTex will prompt you to install a
+lot of packages, so watch for a MikTeX window popping up (possibly behind other
+windows) and follow the prompts.
+
+
 ### Fonts
 
 The example templates rely on having a few fonts installed.
@@ -108,10 +167,10 @@ The fonts to get are the Google
 [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro), and
 [Source Serif Pro](https://fonts.google.com/specimen/Source+Serif+Pro) families.
 
-On macOS, these can simply be downloaded and installed as you would any other
-font.  On Linux via WSL, you can install these normally on the Windows side and
-then synchronize the Windows font folder to the Linux side.  To do this, edit
-(using `sudo`) `/etc/fonts/local.conf` and add:
+On macOS or Windows (without WSL), these can simply be downloaded and installed
+as you would any other font.  On Linux via WSL, you can install these normally
+on the Windows side and then synchronize the Windows font folder to the Linux
+side.  To do this, edit (using `sudo`) `/etc/fonts/local.conf` and add:
 
 ```xml
 <?xml version="1.0"?>
@@ -140,8 +199,8 @@ On macOS, this can be installed via Homebrew:
 $ brew install sass/sass/sass
 ```
 
-On macOS/Linux/WSL it can be installed as a Node.js package (assuming you
-already have [Node.js/npm](https://nodejs.org/) installed):
+On macOS/Linux/WSL/Windows it can be installed as a Node.js package (assuming
+you already have [Node.js/npm](https://nodejs.org/) installed):
 
 ```shell
 $ npm install -g sass
@@ -150,9 +209,9 @@ $ npm install -g sass
 ## Building
 
 This Python library provides a script, `compiledoc`, that will appear in your
-virtual environment's path once the library is installed.  In general, you
-provide an output directory and an input markdown file, and it will build an
-HTML output when the `--html` flag is used (also by default).
+`pipenv` virtual environment's path once the library is installed.  In general,
+you provide an output directory and an input markdown file, and it will build an
+HTML output when the `--html` flag is used (and also by default).
 
 ```shell
 $ compiledoc -o output --html mydoc.md
@@ -278,4 +337,3 @@ tail -f /usr/local/var/run/watchman/<username>-state/log
 (Note that on Windows/WSL, to get `tail` to work the way you expect, you need to
 add `---disable-inotify` to the command; and yes, that's three `-` for some
 reason.)
-
