@@ -1,14 +1,22 @@
 from setuptools import setup, find_packages
+from os import path
+
+# Read the contents of the README file
+cwd = path.abspath(path.dirname(__file__))
+with open(path.join(cwd, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(name='sciengdox',
-      version='0.1',
+      version='0.6.0',
       description='Science/engineering dynamic doc generation',
-      long_description='Science and engineering dynamic documentation '
-                       'pandoc filter and helpers',
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       classifiers=[
-          'Development Status :: 2 - Pre-Alpha',
+          'Development Status :: 4 - Beta',
           'License :: OSI Approved :: MIT License',
-          'Programming Language :: Python :: 3.7',
+          'Natural Language :: English',
+          'Operating System :: OS Independent',
+          'Programming Language :: Python :: 3',
           'Topic :: Scientific/Engineering',
           'Topic :: Text Processing :: Linguistic',
       ],
@@ -26,8 +34,9 @@ setup(name='sciengdox',
           'scipy'
       ],
       extras_require={
-          'tests': ['pytest', 'pyyaml', 'pycodestyle', 'mock', 'pytest_mock'],
-          'examples': ['matplotlib', 'colorama', 'pysvglib']
+          'dev': ['pytest', 'pyyaml', 'pycodestyle', 'mock', 'pytest_mock',
+                  'setuptools', 'wheel', 'twine'],
+          'examples': ['matplotlib', 'colorama']
       },
       entry_points={
           'console_scripts': [

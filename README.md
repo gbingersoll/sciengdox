@@ -36,9 +36,18 @@ After cloning the repository:
 
 ```shell
 $ cd <project-repo>
-$ pipenv install -e .[tests]
+$ pipenv install -e .[dev]
 $ pipenv shell
 ```
+
+To package and release, from within the virtual environment:
+
+```shell
+$ python setup.py sdist bdist_wheel
+$ twine upload dist/*
+```
+
+See also [this page](https://packaging.python.org/tutorials/packaging-projects/).
 
 # Use and Example
 
