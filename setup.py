@@ -27,6 +27,7 @@ setup(name='sciengdox',
       license='MIT',
       packages=find_packages(),
       install_requires=[
+          'colorama',
           'numpy',
           'panflute',
           'pint',
@@ -36,7 +37,7 @@ setup(name='sciengdox',
       extras_require={
           'dev': ['pytest', 'pyyaml', 'pycodestyle', 'mock', 'pytest_mock',
                   'setuptools', 'wheel', 'twine'],
-          'examples': ['matplotlib', 'colorama']
+          'examples': ['matplotlib']
       },
       entry_points={
           'console_scripts': [
