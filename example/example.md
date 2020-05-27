@@ -214,7 +214,7 @@ Defining this code block will echo the code block itself to the document and
 also will execute it, printing the output to the document as well.
 @Lst:executed_python is executed python code.
 
-```{.python .echo #lst:executed_python caption="Executed Python code"}
+```{.python .echo .number-lines #lst:executed_python caption="Executed Python code"}
 class Greeter:
     def speak(__self__):
         print("Hello World")
@@ -231,7 +231,10 @@ greeter.speak()
 
 In general, a code block with the `.python` flag will be executed unless it also
 includes the `.noexec` flag.  If the `.echo` flag is included, the block and the
-results will be included in the document.
+results will be included in the document. Including the `.number-lines` flag
+will add line numbers to the code block, and you can also include e.g.
+`startFrom="12"` (note no leading `.`) to set the starting number for the
+listing.
 
 @Lst:continued_python continues from the previous one, so variables stay
 defined.  This code block also includes the `.repl` flag which simulates an
