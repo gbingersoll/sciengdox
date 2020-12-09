@@ -6,7 +6,10 @@ from .checks import *
 from .conversions import *
 
 ureg = UnitRegistry()
-ureg.setup_matplotlib()
+try:
+    ureg.setup_matplotlib()
+except ModuleNotFoundError:
+    pass
 set_application_registry(ureg)
 Q_ = ureg.Quantity
 
