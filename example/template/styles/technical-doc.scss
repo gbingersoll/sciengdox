@@ -332,3 +332,13 @@ blockquote {
     font-size: 0.8em;
   }
 }
+
+// References
+.csl-entry {
+  div {
+    display: inline-block;
+  }
+  .csl-left-margin {
+    padding-right: 1em;
+  }
+}
