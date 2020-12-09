@@ -184,6 +184,13 @@ def main():
         '--pandoc-citeproc', type=str,
         help='full path to pandoc-citeproc filter.  '
              'If omitted, system path is used')
+    parser.add_argument(
+        '--use-pandoc-citeproc', action='store_true', default=False,
+        help='whether to use the older pandoc-citeproc filter.  If false '
+             '(default), the --citeproc flag is used instead.')
+    parser.add_argument(
+        '--no-citeproc', action='store_true', default=False,
+        help='whether to run citation processing')
 
     args = parser.parse_args()
 
@@ -191,7 +198,10 @@ def main():
     pandoc_exec = find_executable('pandoc', args.pandoc)
     pandoc_pythonexec = find_executable('pandoc-pythonexec',
                                         args.pandoc_pythonexec)
-    pandoc_citeproc = find_executable('pandoc-citeproc', args.pandoc_citeproc)
+    pandoc_citeproc = None
+    if args.use_pandoc_citeproc and not args.no_citeproc:
+        pandoc_citeproc = find_executable('pandoc-citeproc',
+                                          args.pandoc_citeproc)
     pandoc_crossref = find_executable('pandoc-crossref', args.pandoc_crossref)
 
     # Check specified outputs
@@ -255,13 +265,20 @@ def main():
         str(pandoc_exec.absolute()),
         str(input_md.absolute()),
         "--from", "markdown",
-        "--filter", str(pandoc_pythonexec.absolute()),
-        "--filter", str(pandoc_crossref.absolute()),
-        "--filter", str(pandoc_citeproc.absolute()),
         "-Mcref",
         "-Mlistings",
-        f"-Mgithash={parse_git_branch()}{parse_git_hash()}"
+        f"-Mgithash={parse_git_branch()}{parse_git_hash()}",
+        "--filter", str(pandoc_pythonexec.absolute()),
+        "--filter", str(pandoc_crossref.absolute()),
     ]
+
+    if not args.no_citeproc:
+        if pandoc_citeproc:
+            common_pandoc_params += [
+              "--filter", str(pandoc_citeproc.absolute()),
+            ]
+        else:
+            common_pandoc_params += ["--citeproc"]
 
     if build_md:
         # Build Markdown output

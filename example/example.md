@@ -18,31 +18,8 @@ lol: true
 
 autoSectionLabels: true
 
-bibliography: example.bib
 csl: ieee.csl
-references:
-- type: article-journal
-  id: WatsonCrick1953
-  author:
-  - family: Watson
-    given: J. D.
-  - family: Crick
-    given: F. H. C.
-  issued:
-    date-parts:
-    - - 1953
-      - 4
-      - 25
-  title: 'Molecular structure of nucleic acids: a structure for deoxyribose
-    nucleic acid'
-  title-short: Molecular structure of nucleic acids
-  container-title: Nature
-  volume: 171
-  issue: 4356
-  page: 737-738
-  DOI: 10.1038/171737a0
-  URL: http://www.nature.com/nature/journal/v171/n4356/abs/171737a0.html
-  language: en-GB
+bibliography: example.bibtex
 ...
 
 # Example Document
@@ -89,15 +66,49 @@ You can also generate external links with hover text like this:
 
 # Citations
 
-Citations are handled using the
-[`pandoc-citeproc`](https://github.com/jgm/pandoc-citeproc/) filter.  Citation
-data is entered as metadata at the top of the markdown file, and you can
-reference an article in the text[@WatsonCrick1953].
+Citations are handled using the `pandoc` `--citeproc` flag. Citation data can be
+entered as metadata at the top of the markdown file under a `references` section
+such as:
 
-You can also put your references in a [BibTeX](http://www.bibtex.org/) file or
-any of the other file formats that `pandoc-citeproc` supports.  This citation
-comes from the `example.bib` file[@mrx05].  The bibliography file name can be
-provided in the metatdata at the top of the markdown file.
+```yaml
+references:
+- type: article-journal
+  id: WatsonCrick1953
+  author:
+  - family: Watson
+    given: J. D.
+  - family: Crick
+    given: F. H. C.
+  issued:
+    date-parts:
+    - - 1953
+      - 4
+      - 25
+  title: 'Molecular structure of nucleic acids: a structure for deoxyribose
+    nucleic acid'
+  title-short: Molecular structure of nucleic acids
+  container-title: Nature
+  volume: 171
+  issue: 4356
+  page: 737-738
+  DOI: 10.1038/171737a0
+  URL: http://www.nature.com/nature/journal/v171/n4356/abs/171737a0.html
+  language: en-GB
+```
+
+Then you can reference an article in the text[@WatsonCrick1953].
+
+You can alternatively put your references in a [BibTeX](http://www.bibtex.org/)
+file or any of the other file formats that `citeproc` supports.  This citation
+comes from the `example.bibtex` file[@mrx05].  The bibliography file name is
+provided in the metadata at the top of the markdown file:
+
+```yaml
+bibliography: example.bibtex
+```
+
+Note that you can include the `references` metadata or the `bibliography`
+metadata, but not both.
 
 Formatting of citations is handled via a `.csl` file.  The one for
 [IEEE style](https://ieee-dataport.org/sites/default/files/analysis/27/IEEE%20Citation%20Guidelines.pdf)

@@ -361,3 +361,18 @@ tail -f /usr/local/var/run/watchman/<username>-state/log
 (Note that on Windows/WSL, to get `tail` to work the way you expect, you need to
 add `---disable-inotify` to the command; and yes, that's three `-` for some
 reason.)
+
+## Older pandoc Versions
+
+For `pandoc` 2.9 and earlier, the citation manager `pandoc-citeproc` was a
+separate filter that gets added to the compliation pipeline.  The path to this
+filter can be specified on the command line to `compiledoc` with the
+`--pandoc-citeproc PATH` flag.
+
+In newer versions of `pandoc` (2.11 and beyond), the citeproc filter is built-in
+to pandoc and is run by adding `--citeproc` to the `pandoc` command-line.  The
+`compiledoc` script adds this by default unless the flag `--use-pandoc-citeproc`
+is added, in which case the older filter will be used.
+
+If you do not with to run `citeproc` at all, you can add the flag
+`compiledoc --no-citeproc` to skip citation processing altogether.
