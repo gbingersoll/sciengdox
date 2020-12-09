@@ -146,9 +146,9 @@ def main():
         '--self-contained', action='store_true', default=False,
         help='generate self-contained HTML output')
     parser.add_argument(
-        '--statics', type=str, default=['*.bib'], nargs='*',
+        '--statics', type=str, default=['*.bib*'], nargs='*',
         help='patterns of other files needed by pandoc in the '
-             'output directory (e.g. *.bib)')
+             'output directory (e.g. *.bib*)')
 
     md_group = parser.add_mutually_exclusive_group()
     md_group.add_argument('--md', action='store_true', default=False,
