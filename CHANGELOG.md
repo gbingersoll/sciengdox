@@ -5,9 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.7.0] - 2020-12-09
 ### Changed
 - Updated citeproc handling for pandoc >=2.11.  Default is now to use the
   `--citeproc` flag on the `pandoc` command line internally.
+- Various changes in example template for pandoc >=2.11.
+
+### Fixed
+- matplotlib is no longer required to build.  The example still uses it, but
+  you don't have to have it to do a basic document build anymore.
+  [#16](https://github.com/gbingersoll/sciengdox/issues/16)
 
 ## [0.6.3] - 2020-05-27
 ### Fixed
@@ -26,7 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2020-05-27
 Initial public release
 
-[Unreleased]: https://github.com/gbingersoll/sciengdox/compare/v0.6.3...HEAD
+[Unreleased]: https://github.com/gbingersoll/sciengdox/compare/v0.7.0...HEAD
+[0.7.0]: https://github.com/gbingersoll/sciengdox/compare/v0.6.3...v0.7.0
 [0.6.3]: https://github.com/gbingersoll/sciengdox/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/gbingersoll/sciengdox/compare/v0.6.1...v0.6.2
 [0.6.1]: https://github.com/gbingersoll/sciengdox/compare/v0.6.0...v0.6.1
