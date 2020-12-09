@@ -143,6 +143,21 @@ import matplotlib
 matplotlib.use('Agg')
 ```
 
+#### Panflute Version Note
+
+This plugin relies on the
+[`panflute`](https://github.com/sergiocorreia/panflute) Python package as a
+bridge between Python and `pandoc`'s Haskell.  The `panflute`
+[README](https://github.com/sergiocorreia/panflute#supported-pandoc-versions)
+lists API compatibility requirements between versions of `panflute` and versions
+of `pandoc`.  Double-check this if you run into errors that mention `panflute`
+when compiling a document.
+
+If you are running an older version of `pandoc` (e.g. 2.9.2) and start a new
+project, you will need to explicitly install the compatible `panflute` version
+in your environment with e.g. `pipenv install panflute==1.12.5`.  Or
+alternatively install a `pandoc` version 2.11.x.
+
 ### PDF Generation
 
 To generate PDF files through Pandoc, you need to have `xelatex` installed.
