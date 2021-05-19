@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Document output type is now accessible to executable Python code in the
   document via the global variable document_output_format.
   [#19](https://github.com/gbingersoll/sciengdox/issues/19)
+- Allow incorporating interactive Plotly plots in HTML output and the SVG
+  version of the same in PDF output.
+  [#10](https://github.com/gbingersoll/sciengdox/issues/10)
 
 ### Fixed
 - PythonRunner now uses the same python executable as is used to run the pandoc

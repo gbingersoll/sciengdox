@@ -35,9 +35,9 @@ setup(name='sciengdox',
           'scipy'
       ],
       extras_require={
-          'dev': ['pytest', 'pyyaml', 'pycodestyle', 'mock', 'pytest_mock',
-                  'setuptools', 'wheel', 'twine'],
-          'examples': ['matplotlib']
+          'dev': ['beautifulsoup4', 'pytest', 'pyyaml', 'pycodestyle', 'mock',
+                  'pytest_mock', 'setuptools', 'wheel', 'twine'],
+          'examples': ['matplotlib', 'plotly']
       },
       entry_points={
           'console_scripts': [

@@ -164,8 +164,24 @@ async def exec_code_in_image(elem, doc):
     # Remove any single quotes around executed output
     url = re.sub(r'\'', '', url)
 
+    # See if the url was replaced with HTML (see svg_figure function)
+    if url.startswith("<div>"):
+        # Insert the HTML as RawBlock, followed by the original image node
+        # wrapped in a paragraph.  The associated <img> tag should be replaced
+        # later by the inserted div.
+
+        elem.url = 'broken_img_replace_me'
+
+        url = url.replace("<div>", f"<div id='{elem.identifier}'>", 1)
+        doc.elements_to_replace.append(elem.parent)
+        doc.replacement_elements.append(
+            [panflute.RawBlock(url), panflute.Para(elem)])
+
+        return None
+
     # Restore escaped nature of image url
     elem.url = urllib.parse.quote(url)
+
     return None
 
 
@@ -246,7 +262,8 @@ async def exec_code_blocks(elem, doc):
             elif type(elem) == panflute.Code:
                 result = await exec_inline_python(elem, doc)
                 if 'md' in classes:
-                    new_element = panflute.convert_text(elem.text)[0]
+                    new_element = panflute.convert_text(
+                        elem.text, input_format='markdown')[0]
                     return replace_element(doc, elem, new_element)
                 return result
 

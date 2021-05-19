@@ -356,6 +356,16 @@ def main():
 
         run_pandoc(pandoc_params, output_dir, verbose=args.verbose)
 
+        # Post-process HTML file to incorporate e.g. interactive Plotly images
+        from bs4 import BeautifulSoup
+        with open(output_file, 'r', encoding='utf-8') as f:
+            soup = BeautifulSoup(f.read(), 'html.parser')
+        for img in soup.find_all(src='broken_img_replace_me'):
+            div = soup.find(lambda tag: tag.name == 'div' and tag.has_attr('id') and tag['id'] == img['id'])
+            img.replace_with(div.extract())
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(str(soup))
+
     if build_pdf:
         # Build PDF output
         output_file = output_dir.joinpath(input_basename + '.pdf')
