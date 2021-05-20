@@ -274,6 +274,22 @@ $$
 y = -5x + 0.5 = `-5 * my_value + 0.5`{.python}
 $$ {#eq:equation-with-code-eval}
 
+## Conditional Execution
+
+You may want to run different code within your document depending on what output
+format you are compiliing to.  This is especially useful for generated figures
+where you could output a static image for PDF output, but output a
+Javascript-enabled interactive image for HTML output.
+
+When the Python runner starts up during compilation, it assigns the global
+variable `document_output_format` to a string defining what the current `pandoc`
+output format is.  You can use this variable in your code to take different
+actions depending on the output format (e.g. `html` or `latex` for HTML and PDF
+outputs respectively).
+
+Your current document output format is:
+`print(document_output_format)`{.python .asCode}
+
 # Figures
 
 We can use Markdown for figures with captions and so on.  Static images should

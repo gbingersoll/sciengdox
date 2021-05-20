@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Document output type is now accessible to executable Python code in the
+  document via the global variable document_output_format.
+  [#19](https://github.com/gbingersoll/sciengdox/issues/19)
+
 ### Fixed
 - PythonRunner now uses the same python executable as is used to run the pandoc
   filter.  This fixes an issue when running in a venv and necessary packages for

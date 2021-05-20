@@ -256,7 +256,11 @@ async def walk_and_execute_code(doc, executable="python"):
     doc.elements_to_replace = []
     doc.replacement_elements = []
 
-    starting_output = await doc.runner.start()
+    await doc.runner.start()
+
+    # Assign the doc output format to a global in the runner context
+    await doc.runner.run_lines(
+        [f"document_output_format = '{doc.format}'\n"])
 
     doc = await async_walk(doc, exec_code_blocks)
 
