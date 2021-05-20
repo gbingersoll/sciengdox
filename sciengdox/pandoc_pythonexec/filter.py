@@ -14,13 +14,14 @@ class PythonRunner(object):
     prompt = '>>> '
     continuation = '... '
 
-    def __init__(self):
+    def __init__(self, executable="python"):
         self._proc = None
+        self._executable = executable
 
     async def start(self):
         assert self._proc is None
         self._proc = await asyncio.subprocess.create_subprocess_exec(
-            "python",
+            self._executable,
             "-i",
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
@@ -250,8 +251,8 @@ async def exec_code_blocks(elem, doc):
                 return result
 
 
-async def walk_and_execute_code(doc):
-    doc.runner = PythonRunner()
+async def walk_and_execute_code(doc, executable="python"):
+    doc.runner = PythonRunner(executable)
     doc.elements_to_replace = []
     doc.replacement_elements = []
 
@@ -271,8 +272,8 @@ def handle_postponed_replacements(elem, doc):
 
 
 def main(doc=None):
-    from sys import platform
-    if platform == "win32":
+    import sys
+    if sys.platform == "win32":
         # Check that the user's system is set to use UTF-8 for IO
         import os
         try:
@@ -284,7 +285,7 @@ def main(doc=None):
                             'environment variable: PYTHONIOENCODING=utf-8')
 
     doc = panflute.load()
-    asyncio.run(walk_and_execute_code(doc))
+    asyncio.run(walk_and_execute_code(doc, sys.executable))
     doc = doc.walk(handle_postponed_replacements)
     panflute.dump(doc)
 

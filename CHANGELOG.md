@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- PythonRunner now uses the same python executable as is used to run the pandoc
+  filter.  This fixes an issue when running in a venv and necessary packages for
+  your doc aren't installed globally.
+  [#18](https://github.com/gbingersoll/sciengdox/issues/18)
+
 ## [0.7.0] - 2020-12-09
 ### Changed
 - Updated citeproc handling for pandoc >=2.11.  Default is now to use the
