@@ -36,7 +36,7 @@ setup(name='sciengdox',
           'scipy'
       ],
       extras_require={
-          'dev': ['pytest', 'pyyaml', 'pycodestyle', 'mock',
+          'dev': ['ipython', 'pytest', 'pyyaml', 'pycodestyle', 'mock',
                   'pytest_mock', 'setuptools', 'wheel', 'twine'],
           'examples': ['kaleido', 'matplotlib', 'plotly']
       },
