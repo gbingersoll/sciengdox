@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Rebuild Debug Hybrid Package",
+      "dependsOn": ["Run Cmake Build", "Copy Result"],
+      "dependsOrder": "sequence",
+    },
+    {
+      "label": "Build Example Document",
+      "type": "shell",
+      "command": "pipenv run compiledoc -o output --html example.md",
+      "group": "build",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/example"
+      }
+    }
+  ]
+}
