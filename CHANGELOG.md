@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2021-05-24
 ### Added
 - Document output type is now accessible to executable Python code in the
   document via the global variable document_output_format.
@@ -48,7 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.6.0] - 2020-05-27
 Initial public release
 
-[Unreleased]: https://github.com/gbingersoll/sciengdox/compare/v0.7.0...HEAD
+[Unreleased]: https://github.com/gbingersoll/sciengdox/compare/v0.9.0...HEAD
+[0.8.0]: https://github.com/gbingersoll/sciengdox/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/gbingersoll/sciengdox/compare/v0.6.3...v0.7.0
 [0.6.3]: https://github.com/gbingersoll/sciengdox/compare/v0.6.2...v0.6.3
 [0.6.2]: https://github.com/gbingersoll/sciengdox/compare/v0.6.1...v0.6.2
