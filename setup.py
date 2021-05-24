@@ -37,7 +37,7 @@ setup(name='sciengdox',
       extras_require={
           'dev': ['beautifulsoup4', 'pytest', 'pyyaml', 'pycodestyle', 'mock',
                   'pytest_mock', 'setuptools', 'wheel', 'twine'],
-          'examples': ['matplotlib', 'plotly']
+          'examples': ['kaleido', 'matplotlib', 'plotly']
       },
       entry_points={
           'console_scripts': [
