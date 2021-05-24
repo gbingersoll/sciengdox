@@ -27,6 +27,7 @@ setup(name='sciengdox',
       license='MIT',
       packages=find_packages(),
       install_requires=[
+          'beautifulsoup4',
           'colorama',
           'numpy',
           'panflute',
@@ -35,7 +36,7 @@ setup(name='sciengdox',
           'scipy'
       ],
       extras_require={
-          'dev': ['beautifulsoup4', 'pytest', 'pyyaml', 'pycodestyle', 'mock',
+          'dev': ['pytest', 'pyyaml', 'pycodestyle', 'mock',
                   'pytest_mock', 'setuptools', 'wheel', 'twine'],
           'examples': ['kaleido', 'matplotlib', 'plotly']
       },
