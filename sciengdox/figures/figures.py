@@ -1,5 +1,4 @@
 import os
-import pathlib
 from svg import RootSvg
 
 try:
@@ -18,13 +17,11 @@ except ModuleNotFoundError:
 
 def svg_figure(fig, basename, figure_dir="figures", output_dir="", interactive=False):
     if output_dir == "":
-        output_dir = pathlib.Path(figure_dir)
+        output_dir = figure_dir
     elif figure_dir != "":
-        output_dir = pathlib.Path(output_dir) / figure_dir
-    else:
-        output_dir = pathlib.Path(output_dir)
+        output_dir = "/".join([output_dir, figure_dir])
 
-    if not output_dir.exists():
+    if output_dir != "" and not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     filename = f"{basename}.svg"

@@ -6,10 +6,15 @@ import os
 from sciengdox.figures import svg_figure
 from svg import RootSvg
 
+import matplotlib.figure
 
-class FakeFig():
+
+class FakeFig(matplotlib.figure.Figure):
     def __init__(self, mocker):
-        self.savefig = mocker.stub()
+        self.savefig_stub = mocker.stub()
+
+    def savefig(self, path, format="x"):
+        self.savefig_stub(path, format=format)
 
 
 def setup_mocks(mocker, path_exists):
@@ -37,8 +42,8 @@ def test_svg_figure_saves_the_figure_with_default_dirs(mocker):
     fig = setup_mocks(mocker, False)
 
     svg_figure(fig, 'myfigure')
-    fig.savefig.assert_called_once_with('figures/myfigure.svg',
-                                        format='svg')
+    fig.savefig_stub.assert_called_once_with('figures/myfigure.svg',
+                                             format='svg')
 
 
 def test_svg_figure_returns_figure_url_with_default_dirs(mocker):
@@ -59,8 +64,8 @@ def test_svg_figure_saves_the_figure_with_specified_output_dir(mocker):
     fig = setup_mocks(mocker, False)
 
     svg_figure(fig, 'myfigure', output_dir='outs')
-    fig.savefig.assert_called_once_with('outs/figures/myfigure.svg',
-                                        format='svg')
+    fig.savefig_stub.assert_called_once_with('outs/figures/myfigure.svg',
+                                             format='svg')
 
 
 def test_svg_figure_returns_figure_url_with_specified_output_dir(mocker):
@@ -81,8 +86,8 @@ def test_svg_figure_saves_the_figure_with_specified_figures_dir(mocker):
     fig = setup_mocks(mocker, False)
 
     svg_figure(fig, 'myfigure', output_dir='output', figure_dir='figs')
-    fig.savefig.assert_called_once_with('output/figs/myfigure.svg',
-                                        format='svg')
+    fig.savefig_stub.assert_called_once_with('output/figs/myfigure.svg',
+                                             format='svg')
 
 
 def test_svg_figure_returns_figure_url_with_specified_figures_dir(mocker):
@@ -103,7 +108,7 @@ def test_svg_figure_saves_the_figure_with_blank_figure_dir(mocker):
     fig = setup_mocks(mocker, False)
 
     svg_figure(fig, 'myfigure', output_dir='output', figure_dir='')
-    fig.savefig.assert_called_once_with('output/myfigure.svg', format='svg')
+    fig.savefig_stub.assert_called_once_with('output/myfigure.svg', format='svg')
 
 
 def test_svg_figure_returns_figure_url_with_blank_figure_dir(mocker):
@@ -124,7 +129,7 @@ def test_svg_figure_saves_the_figure_with_blank_output_and_fig_dirs(mocker):
     fig = setup_mocks(mocker, False)
 
     svg_figure(fig, 'myfigure', output_dir='', figure_dir='')
-    fig.savefig.assert_called_once_with('myfigure.svg', format='svg')
+    fig.savefig_stub.assert_called_once_with('myfigure.svg', format='svg')
 
 
 def test_svg_figure_returns_figure_url_with_blank_output_and_fig_dirs(mocker):

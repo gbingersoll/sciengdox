@@ -36,8 +36,8 @@ setup(name='sciengdox',
           'scipy'
       ],
       extras_require={
-          'dev': ['ipython', 'pytest', 'pyyaml', 'pycodestyle', 'mock',
-                  'pytest_mock', 'setuptools', 'wheel', 'twine'],
+          'dev': ['ipython', 'pytest', 'pyyaml', 'pycodestyle', 'matplotlib',
+                  'mock', 'pytest_mock', 'setuptools', 'wheel', 'twine'],
           'examples': ['kaleido', 'matplotlib', 'plotly']
       },
       entry_points={
