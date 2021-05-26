@@ -250,9 +250,10 @@ async def exec_code_blocks(elem, doc):
 
     if 'noexec' not in classes:
         if (type(elem) == panflute.Code and
-                re.match(r'^p(q|md)\(.*\)$', elem.text)):
-            # Handle special case of printing a quantity or raw markdown if all
-            # that is in the code block is `pq(value)` or `pmd(value)`
+                re.match(r'^p(i|f|q|md)\(.*\)$', elem.text)):
+            # Handle special case of printing numbers, quantities, or raw
+            # markdown if all that is in the code block is `pq(value)`,
+            # `pmd(value)`, `pi(value)` or `pf(value)`
             await exec_inline_python(elem, doc)
             new_element = panflute.convert_text(elem.text)[0]
             return panflute.Span(*new_element.content)

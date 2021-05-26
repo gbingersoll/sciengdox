@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Allow `pq()` helper function to print bare numbers (i.e. without units).
+- Add `pf()` and `pi()` helpers to print floats and integers.
 
 ## [0.8.0] - 2021-05-24
 ### Added
