@@ -33,6 +33,11 @@ pint.formatting._KNOWN_TYPES = \
 # concise function for printing quantities (i.e. numbers with units) with
 # formatting for the units
 def pq(q, precision=3, scientific=False):
+    try:
+        q.units
+    except AttributeError:
+        q = Q_(q, '')
+
     if scientific:
         num_type = 'g'
     else:
