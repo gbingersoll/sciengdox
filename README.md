@@ -31,21 +31,25 @@ and PDF outputs.
 
 # Development
 
-Use [`pipenv`](https://docs.pipenv.org/) for local environment management.
+Use [`poetry`](https://python-poetry.org/) for local environment management.
 After cloning the repository:
 
 ```shell
 $ cd <project-repo>
-$ pipenv install -e .[dev]
-$ pipenv shell
+$ poetry install
+$ poetry shell
 ```
 
-To package and release, from within the virtual environment:
+To package and release:
 
 ```shell
-$ python setup.py sdist bdist_wheel
-$ twine upload dist/*
+$ poetry build
+$ poetry publish
 ```
+
+Be sure to
+[configure your credentials](https://python-poetry.org/docs/repositories/#configuring-credentials)
+prior to publishing.
 
 See also [this page](https://packaging.python.org/tutorials/packaging-projects/).
 
@@ -78,7 +82,7 @@ example.  The example helpers can be installed into your Python virtual
 environment by running:
 
 ```shell
-$ pipenv install -e .[examples]
+$ poetry install -E examples
 ```
 
 ### Windows-specific Install
@@ -155,8 +159,8 @@ when compiling a document.
 
 If you are running an older version of `pandoc` (e.g. 2.9.2) and start a new
 project, you will need to explicitly install the compatible `panflute` version
-in your environment with e.g. `pipenv install panflute==1.12.5`.  Or
-alternatively install a `pandoc` version 2.11.x.
+in your environment with e.g. `poetry add panflute@1.12.5`.  Or
+alternatively install a `pandoc` version 2.11.x or later.
 
 ### PDF Generation
 
@@ -233,9 +237,10 @@ $ npm install -g sass
 ## Building
 
 This Python library provides a script, `compiledoc`, that will appear in your
-`pipenv` virtual environment's path once the library is installed.  In general,
-you provide an output directory and an input markdown file, and it will build an
-HTML output when the `--html` flag is used (and also by default).
+`poetry` or `pipenv` virtual environment's path (or globally) once the library
+is installed.  In general, you provide an output directory and an input markdown
+file, and it will build an HTML output when the `--html` flag is used (and also
+by default).
 
 ```shell
 $ compiledoc -o output --html mydoc.md
@@ -308,7 +313,7 @@ a temporary `trigger.json` file:
             ]
         ],
         "command": [
-            "pipenv",
+            "poetry",
             "run",
             "compiledoc",
             "-o",
