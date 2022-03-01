@@ -1,7 +1,7 @@
-from . import compiledoc
-from . import constants
-from . import figures
-from . import tables
+from . import compiledoc  # noqa: F401
+from . import constants  # noqa: F401
+from . import figures  # noqa: F401
+from . import tables  # noqa: F401
 from . import units
 
 

@@ -3,6 +3,7 @@ from svg import RootSvg
 
 try:
     import matplotlib.figure
+
     matplotlib_loaded = True
 except ModuleNotFoundError:
     matplotlib_loaded = False
@@ -10,6 +11,7 @@ except ModuleNotFoundError:
 try:
     import plotly  # noqa: F401
     import plotly.io
+
     plotly_loaded = True
 except ModuleNotFoundError:
     plotly_loaded = False
@@ -36,8 +38,7 @@ def svg_figure(fig, basename, figure_dir="figures", output_dir="", interactive=F
             return plotly.io.to_html(fig, include_plotlyjs=False, full_html=False)
         fig.write_image(output_file)  # Note: requires 'kaleido' package
     else:
-        raise Exception(
-            "Unknown figure type.  Try installing matplotlib or plotly.")
+        raise Exception("Unknown figure type.  Try installing matplotlib or plotly.")
 
     file_url = f"{figure_dir}/{filename}" if figure_dir != "" else filename
     return file_url

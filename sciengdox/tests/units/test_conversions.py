@@ -1,6 +1,4 @@
 from pytest import approx
-import scipy as sp
-
 from sciengdox.units.conversions import mag2db, db2mag, pwr2db, db2pwr
 
 

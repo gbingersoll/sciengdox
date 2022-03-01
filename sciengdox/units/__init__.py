@@ -2,8 +2,8 @@ from pint import UnitRegistry, set_application_registry
 from pint.formatting import formatter, register_unit_format
 import os
 
-from .checks import *
-from .conversions import *
+from .checks import *  # noqa: F401, F403
+from .conversions import *  # noqa: F401, F403
 
 ureg = UnitRegistry()
 try:
@@ -17,6 +17,7 @@ Q_ = ureg.Quantity
 def_file = f"{os.path.dirname(os.path.realpath(__file__))}/unit_defs.txt"
 ureg.load_definitions(def_file)
 
+
 # Add Markdown format for Quantities
 @register_unit_format("M")
 def format_markdown(unit, registry, **options):
@@ -24,10 +25,10 @@ def format_markdown(unit, registry, **options):
         unit.items(),
         as_ratio=True,
         single_denominator=True,
-        product_fmt= r' ',
-        division_fmt=r'{}/{}',
-        power_fmt=r'{}^{}^',
-        parentheses_fmt=r'({})',
+        product_fmt=r" ",
+        division_fmt=r"{}/{}",
+        power_fmt=r"{}^{}^",
+        parentheses_fmt=r"({})",
         **options,
     )
 
@@ -38,10 +39,10 @@ def pq(q, precision=3, scientific=False):
     try:
         q.units
     except AttributeError:
-        q = Q_(q, '')
+        q = Q_(q, "")
 
     if scientific:
-        num_type = 'g'
+        num_type = "g"
     else:
-        num_type = 'f'
+        num_type = "f"
     print("{:0.{}{}~M}".format(q, precision, num_type))

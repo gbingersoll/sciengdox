@@ -7,12 +7,12 @@ from itertools import chain
 
 # Wrapper to always provide a list of classes
 def element_classes(elem):
-    return elem.classes if hasattr(elem, 'classes') else []
+    return elem.classes if hasattr(elem, "classes") else []
 
 
 class PythonRunner(object):
-    prompt = '>>> '
-    continuation = '... '
+    prompt = ">>> "
+    continuation = "... "
 
     def __init__(self, executable="python"):
         self._proc = None
@@ -25,7 +25,8 @@ class PythonRunner(object):
             "-i",
             stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.STDOUT)
+            stderr=asyncio.subprocess.STDOUT,
+        )
         return await self._wait_for_prompt()
 
     async def run_lines(self, lines, echo_input=True, repl=False):
@@ -40,11 +41,11 @@ class PythonRunner(object):
                     this_level = 0
                 else:
                     # find next indent level
-                    for el in lines[(idx + 1):]:
+                    for el in lines[(idx + 1) :]:
                         if el != "":
                             this_level = self._indent_level(el)
                             break
-                line = '    ' * this_level
+                line = "    " * this_level
 
             indent_level = self._indent_level(line)
 
@@ -59,11 +60,12 @@ class PythonRunner(object):
             #
             # If the input line was blank, output a space in its place to avoid
             # the blank line getting dropped in HTML output.
-            output += ((line if line != "" else " ") + '\n' +
-                       re.sub(r'^\r?\n', '', result))
+            output += (
+                (line if line != "" else " ") + "\n" + re.sub(r"^\r?\n", "", result)
+            )
 
         # Split output into individual lines
-        output_lines = output.split('\n')
+        output_lines = output.split("\n")
 
         # Remove trailing prompt from result
         del output_lines[-1]
@@ -71,51 +73,52 @@ class PythonRunner(object):
         if echo_input:
             if not repl:
                 # Remove prompts from the beginning of lines
-                output_lines = list(map(
-                    lambda x: re.sub(r'^(>>>|\.\.\.)\s', '', x), output_lines))
+                output_lines = list(
+                    map(lambda x: re.sub(r"^(>>>|\.\.\.)\s", "", x), output_lines)
+                )
         else:
             # Remove echoed input lines
-            output_lines = list(filter(
-                lambda x: not re.search(r'^(>>>|\.\.\.)\s', x), output_lines))
+            output_lines = list(
+                filter(lambda x: not re.search(r"^(>>>|\.\.\.)\s", x), output_lines)
+            )
 
-        return '\n'.join(output_lines)
+        return "\n".join(output_lines)
 
     async def close(self):
         assert self._proc is not None
-        self._sendline('exit()')
+        self._sendline("exit()")
         await self._proc.wait()
 
     def _sendline(self, line):
         assert self._proc is not None
-        self._proc.stdin.write(str.encode(line + '\r\n'))
+        self._proc.stdin.write(str.encode(line + "\r\n"))
 
     async def _wait_for_prompt(self):
         prompt_bytes = PythonRunner.prompt.encode()
         continuation_bytes = PythonRunner.continuation.encode()
 
-        output = b''
+        output = b""
 
         while True:
-            if output[-len(prompt_bytes):] == prompt_bytes:
+            if output[-len(prompt_bytes) :] == prompt_bytes:
                 break
-            if output[-len(continuation_bytes):] == continuation_bytes:
+            if output[-len(continuation_bytes) :] == continuation_bytes:
                 break
             output += await self._proc.stdout.read(1024)
         return output.decode()
 
     def _indent_level(self, line):
-        m = re.search(r'^\s*', line)
+        m = re.search(r"^\s*", line)
         if m is not None:
             return int(len(m[0]) / 4)
         return 0
 
 
 def find_inline_code(text):
-    m = re.search(r'`([^`]*?)`{([^}]*?)}', text)
+    m = re.search(r"`([^`]*?)`{([^}]*?)}", text)
     if m is not None:
         code = m[1]
-        classes = list(map(lambda c: c[1:] if c[0] == '.' else None,
-                           m[2].split(' ')))
+        classes = list(map(lambda c: c[1:] if c[0] == "." else None, m[2].split(" ")))
         classes = [c for c in classes if c]  # Remove None values
         return (code, classes, m.span())
 
@@ -126,21 +129,21 @@ async def replace_embedded_code_with_result(text, doc):
     found = find_inline_code(text)
     if found is not None:
         code, classes, span = found
-        if 'python' in classes:
+        if "python" in classes:
             # Run the code
             result = (await exec_inline_python(panflute.Str(code), doc)).text
 
             # Replace the result in the Math element
-            text = text[0:span[0]] + result + text[span[1]:]
+            text = text[0 : span[0]] + result + text[span[1] :]
 
     return text
 
 
 async def exec_python_block(elem, doc):
     elem.text = await doc.runner.run_lines(
-        elem.text.splitlines(),
-        repl=('repl' in element_classes(elem)))
-    if 'echo' in element_classes(elem):
+        elem.text.splitlines(), repl=("repl" in element_classes(elem))
+    )
+    if "echo" in element_classes(elem):
         return None
     return []
 
@@ -149,7 +152,7 @@ async def exec_inline_python(elem, doc):
     elem.text = await doc.runner.run_lines([elem.text], echo_input=False)
     elem.text = elem.text.strip()
 
-    if 'asCode' in element_classes(elem):
+    if "asCode" in element_classes(elem):
         return None
     return panflute.Str(elem.text)
 
@@ -162,7 +165,7 @@ async def exec_code_in_image(elem, doc):
     url = await replace_embedded_code_with_result(url, doc)
 
     # Remove any single quotes around executed output
-    url = re.sub(r'\'', '', url)
+    url = re.sub(r"\'", "", url)
 
     # See if the url was replaced with HTML (see svg_figure function)
     if url.startswith("<div>"):
@@ -170,12 +173,11 @@ async def exec_code_in_image(elem, doc):
         # wrapped in a paragraph.  The associated <img> tag should be replaced
         # later by the inserted div.
 
-        elem.url = 'broken_img_replace_me'
+        elem.url = "broken_img_replace_me"
 
         url = url.replace("<div>", f"<div id='{elem.identifier}'>", 1)
         doc.elements_to_replace.append(elem.parent)
-        doc.replacement_elements.append(
-            [panflute.RawBlock(url), panflute.Para(elem)])
+        doc.replacement_elements.append([panflute.RawBlock(url), panflute.Para(elem)])
 
         return None
 
@@ -248,23 +250,23 @@ async def exec_code_blocks(elem, doc):
         elem.text = await replace_embedded_code_with_result(elem.text, doc)
         return None
 
-    if 'noexec' not in classes:
-        if (type(elem) == panflute.Code and
-                re.match(r'^p(i|f|q|md)\(.*\)$', elem.text)):
+    if "noexec" not in classes:
+        if type(elem) == panflute.Code and re.match(r"^p(i|f|q|md)\(.*\)$", elem.text):
             # Handle special case of printing numbers, quantities, or raw
             # markdown if all that is in the code block is `pq(value)`,
             # `pmd(value)`, `pi(value)` or `pf(value)`
             await exec_inline_python(elem, doc)
             new_element = panflute.convert_text(elem.text)[0]
             return panflute.Span(*new_element.content)
-        if 'python' in classes:
+        if "python" in classes:
             if type(elem) == panflute.CodeBlock:
                 return await exec_python_block(elem, doc)
             elif type(elem) == panflute.Code:
                 result = await exec_inline_python(elem, doc)
-                if 'md' in classes:
+                if "md" in classes:
                     new_element = panflute.convert_text(
-                        elem.text, input_format='markdown')[0]
+                        elem.text, input_format="markdown"
+                    )[0]
                     return replace_element(doc, elem, new_element)
                 return result
 
@@ -277,8 +279,7 @@ async def walk_and_execute_code(doc, executable="python"):
     await doc.runner.start()
 
     # Assign the doc output format to a global in the runner context
-    await doc.runner.run_lines(
-        [f"document_output_format = '{doc.format}'\n"])
+    await doc.runner.run_lines([f"document_output_format = '{doc.format}'\n"])
 
     doc = await async_walk(doc, exec_code_blocks)
 
@@ -295,16 +296,20 @@ def handle_postponed_replacements(elem, doc):
 
 def main(doc=None):
     import sys
+
     if sys.platform == "win32":
         # Check that the user's system is set to use UTF-8 for IO
         import os
+
         try:
             ioencoding = os.environ["PYTHONIOENCODING"]
         except KeyError:
-            ioencoding = 'undefined'
-        if ioencoding != 'utf-8':
-            raise Exception('Fix interprocess IO by setting a Windows '
-                            'environment variable: PYTHONIOENCODING=utf-8')
+            ioencoding = "undefined"
+        if ioencoding != "utf-8":
+            raise Exception(
+                "Fix interprocess IO by setting a Windows "
+                "environment variable: PYTHONIOENCODING=utf-8"
+            )
 
     doc = panflute.load()
     asyncio.run(walk_and_execute_code(doc, sys.executable))

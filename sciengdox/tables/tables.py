@@ -3,15 +3,15 @@ import re
 
 class TableCell(object):
     def __init__(self, content, max_width=None):
-        manual_lines = str(content).split('\n')
+        manual_lines = str(content).split("\n")
         if max_width:
             self.lines = []
             for mr in manual_lines:
-                words = re.split(r'\s+', mr)
+                words = re.split(r"\s+", mr)
                 sublines = [words[0]]
                 for w in words[1:]:
                     if (len(sublines[-1]) + len(w) + 1) <= max_width:
-                        sublines[-1] += ' ' + w
+                        sublines[-1] += " " + w
                     else:
                         sublines.append(w)
                 self.lines += sublines
@@ -30,12 +30,11 @@ class TableCell(object):
         try:
             lines = self.lines.__getitem__(indices)
         except IndexError:
-            return ''
+            return ""
 
         if isinstance(indices, slice):
-            requested_lines = ((indices.stop or len(self.lines)) -
-                               (indices.start or 0))
-            lines += [''] * (requested_lines - len(lines))
+            requested_lines = (indices.stop or len(self.lines)) - (indices.start or 0)
+            lines += [""] * (requested_lines - len(lines))
 
         return lines
 
@@ -142,13 +141,14 @@ class Table(object):
     def markdown(self, caption, label, alignments=None, footnotes=None):
         # build horizontal dividers
         column_widths = self._column_widths()
-        alignments = alignments or 'd'*self.num_cols
-        header_divider = [self._aligned_header(w, alignments[i])
-                          for i, w in enumerate(column_widths)]
-        header_divider = '+' + '+'.join(header_divider) + '+'
-        row_divider = re.sub(r'[=:]', '-', header_divider)
-        line_divider = re.sub(r'[=:]', ' ', header_divider)
-        line_divider = re.sub(r'[+]', '|', line_divider)
+        alignments = alignments or "d" * self.num_cols
+        header_divider = [
+            self._aligned_header(w, alignments[i]) for i, w in enumerate(column_widths)
+        ]
+        header_divider = "+" + "+".join(header_divider) + "+"
+        row_divider = re.sub(r"[=:]", "-", header_divider)
+        line_divider = re.sub(r"[=:]", " ", header_divider)
+        line_divider = re.sub(r"[+]", "|", line_divider)
 
         # initialize output
         strings = [row_divider]
@@ -158,9 +158,11 @@ class Table(object):
         for r in range(self.num_rows):
             num_lines = TableLine(self[r, :]).height
             for ll in range(num_lines):
-                segments = [self._pad_string(self[r, c][ll], column_widths[c])
-                            for c in range(self.num_cols)]
-                strings.append('| ' + ' | '.join(segments) + ' |')
+                segments = [
+                    self._pad_string(self[r, c][ll], column_widths[c])
+                    for c in range(self.num_cols)
+                ]
+                strings.append("| " + " | ".join(segments) + " |")
                 strings.append(line_divider)
 
             strings[-1] = row_divider
@@ -176,26 +178,25 @@ class Table(object):
         caption = f"\n\nTable: {caption} {{#{label}}}\n"
 
         # Build footnote text
-        footnote_str = ''
+        footnote_str = ""
         if footnotes is not None:
             for name in footnotes:
                 footnote_str += f"\n[^{name}]: {footnotes[name]}"
-            footnote_str += '\n'
+            footnote_str += "\n"
 
         # Combine everything and return
-        return ('\n'.join(strings) + caption + footnote_str)
+        return "\n".join(strings) + caption + footnote_str
 
     def _build_new_row(self, cell_strings, max_widths=None):
         if len(self.max_widths) and max_widths is not None:
-            raise ValueError('Max widths already established on table')
+            raise ValueError("Max widths already established on table")
 
         if self.num_cols == 0:
             self.max_widths = max_widths or [None] * len(cell_strings)
         else:
             self._compare_dims(self.num_cols, len(cell_strings))
 
-        return [TableCell(a, self.max_widths[i])
-                for i, a in enumerate(cell_strings)]
+        return [TableCell(a, self.max_widths[i]) for i, a in enumerate(cell_strings)]
 
     def _add_new_col(self, cell_strings, max_width=None, idx=None):
         new_col = [TableCell(a, max_width) for a in cell_strings]
@@ -224,23 +225,27 @@ class Table(object):
         return widths
 
     def _pad_string(self, str, width):
-        return str + (' ' * (width - len(str)))
+        return str + (" " * (width - len(str)))
 
     def _aligned_header(self, width, alignment):
-        header = '=' * (width + 2)
-        if alignment == 'l':
-            header = ':' + header[1:]
-        elif alignment == 'c':
-            header = ':' + header[1:-1] + ':'
-        elif alignment == 'r':
-            header = header[0:-1] + ':'
+        header = "=" * (width + 2)
+        if alignment == "l":
+            header = ":" + header[1:]
+        elif alignment == "c":
+            header = ":" + header[1:-1] + ":"
+        elif alignment == "r":
+            header = header[0:-1] + ":"
 
         return header
 
 
-if (__name__ == '__main__'):
-    tbl = Table([['abc def', 'bcd', 'xyz'],
-                 ['egg', 'dog walker', 'guppy'],
-                 ['bird', 'octopus', 'cat food']],
-                max_widths=[4, None, 4])
-    print(tbl.markdown('my caption', 'tbl:label', 'crl'))
+if __name__ == "__main__":
+    tbl = Table(
+        [
+            ["abc def", "bcd", "xyz"],
+            ["egg", "dog walker", "guppy"],
+            ["bird", "octopus", "cat food"],
+        ],
+        max_widths=[4, None, 4],
+    )
+    print(tbl.markdown("my caption", "tbl:label", "crl"))
