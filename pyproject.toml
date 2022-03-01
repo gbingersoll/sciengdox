@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "sciengdox"
-version = "0.9.0"
+version = "0.10.0"
 description = "Science/engineering dynamic doc generation"
 authors = ["Greg Ingersoll <greg.ingersoll@convolutionresearch.com>"]
 license = "MIT"
