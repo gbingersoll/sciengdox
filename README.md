@@ -170,7 +170,7 @@ $ sudo apt-get install texlive-xetex
 On macOS:
 
 ```shell
-$ brew cask install mactex
+$ brew install --cask mactex
 ```
 
 On Windows (without WSL):
