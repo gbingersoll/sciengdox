@@ -19,7 +19,7 @@ classifiers = [
 include = ["README.md", "CHANGELOG.md", "sciengdox/units/unit_defs.txt"]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.11"
+python = "^3.9"
 beautifulsoup4 = "^4.10.0"
 colorama = "^0.4.4"
 numpy = "^1.22.2"
@@ -40,9 +40,9 @@ PyYAML = "^6.0"
 matplotlib = "^3.5.1"
 mock = "^4.0.3"
 pytest-mock = "^3.7.0"
-setuptools = "^60.9.3"
+setuptools = "^65.5.1"
 twine = "^3.8.0"
-wheel = "^0.37.1"
+wheel = "^0.38.1"
 
 [tool.poetry.scripts]
 compiledoc = 'sciengdox.compiledoc:main'
