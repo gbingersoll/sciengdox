@@ -42,7 +42,7 @@ mock = "^4.0.3"
 pytest-mock = "^3.7.0"
 setuptools = "^60.9.3"
 twine = "^3.8.0"
-wheel = "^0.37.1"
+wheel = "^0.38.1"
 
 [tool.poetry.scripts]
 compiledoc = 'sciengdox.compiledoc:main'
